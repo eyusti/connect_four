@@ -1,6 +1,7 @@
 import pytest
 from connect_four import Board, Game
 
+# Board test cases
 def test_board_is_full_with_full_board():
     new_board = Board()
     new_board.board = [["R" for column in range(7)]for row in range(6)]
@@ -11,21 +12,18 @@ def test_board_is_full_with_not_full_board():
     new_board.board = [["?" for column in range(7)]for row in range(6)]
     assert new_board.board_is_full() == False
 
-def test_position_is_empty_while_empty():
-    new_board = Board()
-    new_board.board = [["?" for column in range(7)]for row in range(6)]
-    assert new_board.is_position_empty(1,1) == True
+# Game test cases
+def test_row_not_win():
+    new_game = Game()
+    new_game.board.board = [['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['R', 'B', 'R', 'B', 'R', 'B', 'R']]
+    assert new_game.check_row() == False
+    
+def test_row_win():
+    new_game = Game()
+    new_game.board.board = [['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['B', 'B', 'R', 'R', 'R', 'R', 'B']]
+    assert new_game.check_row() == True
 
-def test_position_is_empty_while_full():
-    new_board = Board()
-    new_board.board = [["R" for column in range(7)]for row in range(6)]
-    assert new_board.is_position_empty(1,1) == False
-
-def test_place_works_correctly():
-    new_board = Board()
-    new_board.place(1,1,"R")
-    assert new_board.board == [['?', '?', '?', '?', '?', '?', '?'],['?', "R", '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?']]
-
+@pytest.mark.skip(reason="unfinished test")
 def test_get_player_AI():
     game = Game()
     game.input = lambda: 'some input'
@@ -33,3 +31,4 @@ def test_get_player_AI():
     game.get_player_AI()
 
     assert game.player1 != None and game.player2 != None
+

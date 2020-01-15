@@ -77,7 +77,7 @@ class Game:
         visited_list = []
         visited_list.append(any_list[0])
         for item in any_list[1:]:
-            if item in visited_list:
+            if item in visited_list and item != "?":
                 visited_list.append(item)
                 if len(visited_list) >= 4:
                     return True
@@ -90,7 +90,7 @@ class Game:
         for row in range(6):
             if self.check_four_consecutive(self.board.board[row]):
                 return True
-        return False
+        return False        
 
     def play_game(self):        
         while not self.board.board_is_full():
@@ -119,4 +119,5 @@ class Game:
                 place(row, column, current_color)"""
 
 new_game = Game()
+new_game.board.board = [['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['R', 'B', 'R', 'B', 'R', 'B', 'R']]
 print(new_game.check_row())
