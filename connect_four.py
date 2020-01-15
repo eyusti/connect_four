@@ -92,6 +92,40 @@ class Game:
                 return True
         return False        
 
+    def check_column(self):
+        column_list = []
+        for column in range(7):
+            for row in range(6):
+                column_list.append(self.board.board[row][column])
+            is_winner = self.check_four_consecutive(column_list)
+            if is_winner:
+                return True
+        return False
+
+    def check_diagonal(self):
+        diagonal_list = []
+        c_index = 0
+        r_index = 0
+        column_routine_index = 0
+
+        while column_routine_index < 7:
+            print(column_routine_index)
+            while c_index < 7 and r_index < 6:
+                print(r_index,c_index)
+                diagonal_list.append(self.board.board[r_index][c_index])
+                c_index += 1
+                r_index += 1
+            print(diagonal_list)
+            is_winner = self.check_four_consecutive(diagonal_list)
+            diagonal_list = []
+            column_routine_index += 1
+            c_index = column_routine_index
+            r_index = 0
+            if is_winner:
+                return True
+        
+        return False
+
     def play_game(self):        
         while not self.board.board_is_full():
             current_AI = None
@@ -119,5 +153,11 @@ class Game:
                 place(row, column, current_color)"""
 
 new_game = Game()
-new_game.board.board = [['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['?', '?', '?', '?', '?', '?', '?'],['R', 'B', 'R', 'B', 'R', 'B', 'R']]
-print(new_game.check_row())
+new_game.board.board = [
+    ['?', '?', '?', '?', '?', '?', '?'],
+    ['1', '?', '?', '?', '?', '?', '?'],
+    ['?', '1', '?', '?', '?', '?', '?'],
+    ['?', '?', '1', '?', '?', '?', '?'],
+    ['?', '?', '?', '1', '?', '?', '?'],
+    ['?', '?', '?', '?', '1', '?', '?']]
+print(new_game.check_diagonal())
