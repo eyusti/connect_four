@@ -1,14 +1,32 @@
 #!/usr/bin/env python3
 from pprint import pprint
 from random import randint
+import math
+from copy import deepcopy
 
 class Board:
     def __init__(self):
         self.board = [["?" for column in range(7)]for row in range(6)]
 
+# Utility
     def print_board(self):
         pprint(self.board)
 
+    def place(self, column, player_color):
+        for row in range(5,-1,-1):
+            if self.board[row][column] == "?":
+                self.board[row][column] = player_color
+                return
+
+    def get_all_moves(self, player_color):
+        all_moves = []
+        for column in range(7):
+            new_board = deepcopy(self)
+            new_board.place(column,player_color)
+            all_moves.append(new_board)
+        return all_moves
+
+# Board Checkers
     def board_is_full(self):
         for row in range(6):
             for column in range(7):
@@ -21,14 +39,7 @@ class Board:
         for row in range(6):
             if self.board[row][column] == "?":
                 return True
-        return False
-
-    def place(self, column, player_color):
-        for row in range(5,-1,-1):
-            if self.board[row][column] == "?":
-                self.board[row][column] = player_color
-                return
-
+        return False  
 
 class Game:
     def __init__(self):
@@ -68,40 +79,44 @@ class Game:
     def switch_current_player(self):
         if self.current_turn == 1:
             self.current_turn = 2
+            self.current_color = self.p2_color
             return
         if self.current_turn == 2:
             self.current_turn = 1
+            self.current_color = self.p1_color
             return
 
     def play_game(self):        
-            while not self.board.board_is_full():
-                current_AI = None
+        while not self.board.board_is_full():
+            current_AI = None
 
-                if self.current_turn == 1:
-                    current_AI = self.player1
-                    self.current_color = self.p1_color
-                if self.current_turn == 2:
-                    current_AI = self.player2
-                    self.current_color = self.p2_color
+            if self.current_turn == 1:
+                current_AI = self.player1
+                self.current_color = self.p1_color
+            if self.current_turn == 2:
+                current_AI = self.player2
+                self.current_color = self.p2_color
                 
-                if current_AI == "rng":
-                    while True:
-                        column = self.rng_move()
-                        if self.board.does_column_have_space(column):
-                            self.board.place(column, self.current_color)
-                            self.board.print_board()
-                            break
-                # refactor this with winner method once created
-                winner = self.provide_winner()
-                if winner:
-                    print("The game has been won by: " + winner)
-                    return 
+            
+            if current_AI == "rng":
+                while True:
+                    column = self.rng_move()
+                    if self.board.does_column_have_space(column):
+                        self.board.place(column, self.current_color)
+                        self.board.print_board()
+                        break
+            # refactor this with winner method once created
+            winner = self.provide_winner()
+            if winner:
+                print("The game has been won by: Player " + winner)
+                return 
 
-                self.switch_current_player()
-                
-                """if current_AI == "Negamax":
-                    column, score = Negamax()
-                    place(column, self.current_color)"""
+            self.switch_current_player()
+            
+            """if current_AI == "minmax":
+                score, column = min_max(,self.current_color)
+                place(column, self.current_color)"""
+
 # AI Solutions
     def rng_move(self):
         column = randint(0,6)
@@ -109,31 +124,35 @@ class Game:
 
     def min_max(self, board, player):
         winner = self.provide_winner()
-        if winner == player:
+        if winner == self.current_color:
             return 1
-        elif not winner and self.board.board_is_full():
-            return 0
-        else:
+        if winner:
             return -1
-        """
-        if game is won return score
+        if not winner and self.board.board_is_full():
+            return 0
+            
+        all_move_boards = board.get_all_moves(player)
 
-        if player is maximizing player:
-            maxEval = + infinity
+        if player is self.current_color:
+            maxEval = -math.inf
             for move_board in all_move_boards: 
-                eval = min_max(move_board)
+                eval = self.min_max(move_board, self.get_opposite_symbol(player))
                 maxEval = max(maxEval, eval)
                 return maxEval
-        
-        if player is minimizing player:
-            minEval = - infinity
-            for move_board in all_move_board:
-                eval =  min_max(move_board)
+
+        else:
+            minEval = math.inf
+            for move_board in all_move_boards:
+                eval =  self.min_max(move_board, self.get_opposite_symbol(player))
                 minEval = min(minEval,eval)
                 return minEval
 
-        
-        """
+# AI Helper Methods
+    def get_opposite_symbol(self, player):
+        if player == "1":
+            return "2"
+        else:
+            return "1"
 
 # Win Checkers
     def check_four_consecutive(self,any_list):
@@ -157,8 +176,8 @@ class Game:
         return None       
 
     def check_column(self):
-        column_list = []
         for column in range(7):
+            column_list = []
             for row in range(6):
                 column_list.append(self.board.board[row][column])
             symb_winner = self.check_four_consecutive(column_list)
@@ -253,3 +272,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
