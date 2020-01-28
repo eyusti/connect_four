@@ -78,136 +78,136 @@ def test_board_is_full_with_not_full_board():
 
 # Game Win checking test cases
 def test_row_not_win():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['2', '1', '2', '1', '2', '1', '2']]
-    assert new_game.check_row() == None
+    assert board.check_row() == None
     
 def test_row_win():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['1', '1', '2', '2', '2', '2', '1']]
-    assert new_game.check_row() == "2"
+    assert board.check_row() == "2"
 
 def test_column_win():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '1'],
         ['?', '?', '?', '?', '?', '2', '1'],
         ['?', '?', '?', '?', '?', '2', '1'],
         ['?', '?', '?', '?', '?', '2', '1']]
-    assert new_game.check_column() == "1"
+    assert board.check_column() == "1"
 
 def test_column_not_win():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '2'],
         ['?', '?', '?', '?', '?', '?', '1'],
         ['?', '?', '?', '?', '?', '2', '1'],
         ['?', '?', '?', '?', '?', '2', '1']]
-    assert new_game.check_column() == None
+    assert board.check_column() == None
 
 def test_diagonal_win():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '1'],
         ['?', '?', '?', '?', '?', '1', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '1', '2', '2', '2']]
-    assert new_game.check_diagonals() == "1"
+    assert board.check_diagonals() == "1"
 
 def test_diagonal_win_other_loop():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '1', '?', '2', '1'],
         ['?', '?', '1', '?', '2', '1', '?'],
         ['?', '1', '?', '?', '?', '?', '1'],
         ['1', '?', '2', '1', '?', '?', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '?', '2', '2', '2']]
-    assert new_game.check_diagonals() == "1"
+    assert board.check_diagonals() == "1"
 
 def test_other_diagonal_win():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '1', '?', '?', '?'],
         ['?', '?', '?', '?', '1', '?', '?'],
         ['1', '?', '?', '?', '?', '1', '?'],
         ['2', '?', '?', '?', '?', '?', '1'],
         ['1', '2', '1', '?', '?', '?', '?'],
         ['2', '2', '2', '1', '?', '?', '?']]
-    assert new_game.check_diagonals() == "1"
+    assert board.check_diagonals() == "1"
 
 def test_other_diagonal_win_other_loop():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['1', '?', '?', '?', '?', '?', '?'],
         ['2', '1', '?', '?', '?', '?', '?'],
         ['1', '2', '1', '?', '?', '?', '?'],
         ['2', '2', '2', '1', '?', '?', '?']]
-    assert new_game.check_diagonals() == "1"
+    assert board.check_diagonals() == "1"
 
 def test_diagonal_not_win():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '1', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '1', '2', '2', '2']]
-    assert new_game.check_diagonals() == None
+    assert board.check_diagonals() == None
 
 def test_provide_winner():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '1'],
         ['?', '?', '?', '?', '?', '1', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '1', '2', '2', '2']]
-    assert new_game.provide_winner() == "1"
+    assert board.provide_winner() == "1"
 
 def test_provide_winner_tie():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['1', '2', '1', '2', '1', '2', '1'],
         ['1', '2', '1', '1', '1', '2', '1'],
         ['2', '1', '2', '2', '2', '1', '2'],
         ['1', '2', '1', '1', '1', '2', '1'],
         ['2', '1', '2', '2', '2', '1', '2'],
         ['2', '1', '2', '1', '2', '1', '2']]
-    assert new_game.provide_winner() == None
+    assert board.provide_winner() == None
 
 def test_provide_winner_no_winner():
-    new_game = Game()
-    new_game.board.board = [
+    board = Board()
+    board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '1', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '1', '2', '2', '2']]
-    assert new_game.provide_winner() == None
+    assert board.provide_winner() == None
 
 # Game AI Test Cases
 
@@ -247,9 +247,29 @@ def test_minmax_tied_board_scoring():
         ['2', '1', '2', '1', '2', '1', '2']]
     assert new_game.min_max(new_game.board, "1") == 0
 
-#def test_minmax_maximizer_win():
-    
-#def test_minmax_maximizer_lose():
+def test_minmax_maximizer_win():
+    new_game = Game()
+    new_game.current_color = "1"
+    new_game.board.board = [
+        ['1', '1', '1', '2', '2', '2', '?'],
+        ['2', '2', '2', '1', '1', '1', '?'],
+        ['1', '1', '1', '2', '2', '2', '1'],
+        ['2', '2', '2', '1', '1', '1', '2'],
+        ['1', '1', '1', '2', '2', '2', '1'],
+        ['2', '2', '2', '1', '1', '1', '2']]
+    assert new_game.min_max(new_game.board,"1") == 1
+
+def test_minmax_maximizer_lose():
+    new_game = Game()
+    new_game.current_color = "1"
+    new_game.board.board = [
+        ['1', '1', '1', '2', '?', '2', '?'],
+        ['2', '2', '2', '1', '?', '1', '?'],
+        ['1', '1', '1', '2', '2', '2', '1'],
+        ['2', '2', '2', '1', '1', '1', '2'],
+        ['1', '1', '1', '2', '2', '2', '1'],
+        ['2', '2', '2', '1', '1', '1', '2']]
+    assert new_game.min_max(new_game.board,"2") == -1
 
 def test_minmax_maximizer_tie():
     new_game = Game()
@@ -262,63 +282,6 @@ def test_minmax_maximizer_tie():
         ['2', '1', '2', '2', '2', '1', '2'],
         ['2', '1', '2', '1', '2', '1', '2']]
     assert new_game.min_max(new_game.board,"1") == 0
-
-#def test_TEMP_getallboards():
-    new_game = Game()
-    new_game.current_color = "1"
-    all_moves_board_objects = new_game.min_max(new_game.board, "1")
-    list_of_just_boards = []
-    for board_object in all_moves_board_objects:
-        list_of_just_boards.append(board_object.board)
-    assert list_of_just_boards == [[
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['1', '?', '?', '?', '?', '?', '?']],
-        [
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '1', '?', '?', '?', '?', '?']],
-        [
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '1', '?', '?', '?', '?']],
-        [
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '1', '?', '?', '?']],
-        [
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '1', '?', '?']],
-        [
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '1', '?']],
-        [
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '1']]]
 
 # Game AI Helpers
 def test_get_opposite_symbol():
