@@ -215,11 +215,11 @@ class Game:
                         self.board.print_board()
                         break
 
-            """if current_AI == "minmax":
-                score, column = min_max(self.board,self.current_color,1)
-                place(column, self.current_color)"""
+            if current_AI == "minmax":
+                score, column = self.min_max(self.board,self.current_color,1)
+                self.board.place(column, self.current_color)
 
-            winner = self.board.provide_winner()
+            winner = self.board.provide_winner(self.board)
 
             if winner:
                 print("The game has been won by: Player " + winner[0][0])
@@ -235,13 +235,13 @@ class Game:
     def min_max(self, board, player, depth):
         winner = board.provide_winner(board)
         if winner == [[self.current_color]]:
-            return 1
+            return math.inf
         if winner:
-            return -1
+            return -math.inf
         if not winner and board.board_is_full():
             return 0
         if depth == 0:
-            return
+            return self.heuristic_score(board)
             
         all_move_boards = board.get_all_moves(player)
 

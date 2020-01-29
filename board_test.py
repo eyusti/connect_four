@@ -1,4 +1,5 @@
 import pytest
+import math
 from connect_four import Board, Game, check_four_consecutive,check_potential_win
 
 # Board utility test cases
@@ -223,7 +224,7 @@ def test_minmax_winning_board_scoring():
         ['?', '?', '?', '1', '2', '?', '?'],
         ['?', '?', '?', '1', '2', '?', '?'],
         ['?', '?', '?', '1', '2', '?', '?']]
-    assert new_game.min_max(new_game.board, "1", 4) == 1
+    assert new_game.min_max(new_game.board, "1", 4) == math.inf
 
 def test_minmax_losing_board_scoring():
     new_game = Game()
@@ -235,7 +236,7 @@ def test_minmax_losing_board_scoring():
         ['?', '?', '?', '1', '2', '?', '?'],
         ['?', '?', '?', '1', '2', '?', '?'],
         ['?', '?', '1', '1', '2', '?', '?']]
-    assert new_game.min_max(new_game.board, "1", 4) == -1
+    assert new_game.min_max(new_game.board, "1", 4) == -math.inf
 
 def test_minmax_tied_board_scoring():
     new_game = Game()
@@ -259,7 +260,7 @@ def test_minmax_maximizer_win():
         ['2', '2', '2', '1', '1', '1', '2'],
         ['1', '1', '1', '2', '2', '2', '1'],
         ['2', '2', '2', '1', '1', '1', '2']]
-    assert new_game.min_max(new_game.board,"1", 4) == 1
+    assert new_game.min_max(new_game.board,"1", 4) == math.inf
     
 def test_minmax_maximizer_lose():
     new_game = Game()
@@ -271,7 +272,7 @@ def test_minmax_maximizer_lose():
         ['2', '2', '2', '1', '1', '1', '2'],
         ['1', '1', '1', '2', '2', '2', '1'],
         ['2', '2', '2', '1', '1', '1', '2']]
-    assert new_game.min_max(new_game.board,"2", 4) == -1
+    assert new_game.min_max(new_game.board,"2", 4) == -math.inf
     
 def test_minmax_maximizer_tie():
     new_game = Game()
@@ -285,7 +286,7 @@ def test_minmax_maximizer_tie():
         ['2', '1', '2', '1', '2', '1', '2']]
     assert new_game.min_max(new_game.board,"1", 4) == 0
 
-def test_heuristic_row():
+def test_heuristic_simple():
     game = Game()
     board = Board()
     board.board = [
@@ -296,6 +297,18 @@ def test_heuristic_row():
         ['?', '2', '2', '?', '2', '2', '?'],
         ['?', '2', '2', '?', '2', '2', '?']]
     assert game.heuristic_score(board) == -4
+
+def test_heuristic_complex():
+    game = Game()
+    board = Board()
+    board.board = [
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '2', '?', '2', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '2', '?', '2', '2', '?'],
+        ['?', '2', '2', '?', '2', '?', '?']]
+    assert game.heuristic_score(board) == -6
 
 # Game AI Helpers
 def test_get_opposite_symbol():
