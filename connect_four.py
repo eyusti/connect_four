@@ -232,7 +232,7 @@ class Game:
         column = randint(0,6)
         return column
 
-    def min_max(self, board, player, depth):
+    def min_max(self, board, player, depth, alpha, beta):
         winner = board.provide_winner(board)
         if winner == [[self.current_color]]:
             return math.inf, None
@@ -249,20 +249,26 @@ class Game:
             maxEval = -math.inf
             best_column = 11
             for move_board, column in all_move_boards: 
-                eval, c_column = self.min_max(move_board, self.get_opposite_symbol(player), depth - 1)
+                eval, _column = self.min_max(move_board, self.get_opposite_symbol(player), depth - 1, alpha, beta)
                 maxEval = max(maxEval, eval)
+                alpha = max(alpha,maxEval)
                 if maxEval == eval:
                     best_column = column
+                if alpha >= beta:
+                    break
             return maxEval , best_column
 
         else:
             minEval = math.inf
             best_column = 11
             for move_board, column in all_move_boards:
-                eval, c_column =  self.min_max(move_board, self.get_opposite_symbol(player), depth - 1)
+                eval, _column =  self.min_max(move_board, self.get_opposite_symbol(player), depth - 1, alpha, beta)
                 minEval = min(minEval,eval)
+                beta = min(beta, minEval)
                 if minEval == eval:
                     best_column = column
+                if alpha >= beta:
+                    break
             return minEval , best_column
 
 # AI Helper Methods
