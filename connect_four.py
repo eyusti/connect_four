@@ -24,7 +24,7 @@ class Board:
             if self.does_column_have_space(column):
                 new_board = deepcopy(self)
                 new_board.place(column,player_color)
-                all_moves.append(new_board)
+                all_moves.append((new_board,column))
         return all_moves
 
 # Board Checkers
@@ -216,7 +216,7 @@ class Game:
                         break
 
             if current_AI == "minmax":
-                score, column = self.min_max(self.board,self.current_color,1)
+                _score, column = self.min_max(self.board,self.current_color,1)
                 self.board.place(column, self.current_color)
 
             winner = self.board.provide_winner(self.board)
@@ -235,29 +235,35 @@ class Game:
     def min_max(self, board, player, depth):
         winner = board.provide_winner(board)
         if winner == [[self.current_color]]:
-            return math.inf
+            return math.inf, None
         if winner:
-            return -math.inf
+            return -math.inf, None
         if not winner and board.board_is_full():
-            return 0
+            return 0, None
         if depth == 0:
-            return self.heuristic_score(board)
+            return self.heuristic_score(board) , None
             
         all_move_boards = board.get_all_moves(player)
 
         if player is self.current_color:
             maxEval = -math.inf
-            for move_board in all_move_boards: 
-                eval = self.min_max(move_board, self.get_opposite_symbol(player), depth - 1)
+            best_column = 11
+            for move_board, column in all_move_boards: 
+                eval, c_column = self.min_max(move_board, self.get_opposite_symbol(player), depth - 1)
                 maxEval = max(maxEval, eval)
-                return maxEval
+                if maxEval == eval:
+                    best_column = column
+            return maxEval , best_column
 
         else:
             minEval = math.inf
-            for move_board in all_move_boards:
-                eval =  self.min_max(move_board, self.get_opposite_symbol(player), depth - 1)
+            best_column = 11
+            for move_board, column in all_move_boards:
+                eval, c_column =  self.min_max(move_board, self.get_opposite_symbol(player), depth - 1)
                 minEval = min(minEval,eval)
-                return minEval
+                if minEval == eval:
+                    best_column = column
+            return minEval , best_column
 
 # AI Helper Methods
     def get_opposite_symbol(self, player):
