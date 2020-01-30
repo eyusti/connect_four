@@ -177,7 +177,7 @@ class Game:
         while True:
             try: 
                 self.player2 = input("Which AI would you like for player 2? (RNG / MinMax) ").lower()
-                while self.player2 not in ["rng","MinMax"]:
+                while self.player2 not in ["rng","minmax"]:
                     self.player2 = input("Sorry, that isn't an AI we have. Which AI would you like for player 2? (RNG / MinMax) ").lower()     
             except ValueError:
                 print("I'm sorry Dave, I'm afraid I can't do that")
@@ -216,14 +216,19 @@ class Game:
                         break
 
             if current_AI == "minmax":
-                _score, column = self.min_max(self.board,self.current_color,1)
+                _score, column = self.min_max(self.board,self.current_color,5, -math.inf, math.inf)
                 self.board.place(column, self.current_color)
+                self.board.print_board()
 
             winner = self.board.provide_winner(self.board)
 
             if winner:
                 print("The game has been won by: Player " + winner[0][0])
-                return 
+                return winner[0][0]
+            
+            if self.board.board_is_full():
+                print("The game is a tie")
+                return "tie"
 
             self.switch_current_player()
             
@@ -325,6 +330,19 @@ def check_potential_win(any_list):
     while c_index < len(any_list) - 3:
         temp = any_list[c_index: c_index + 4]
         if temp in [["?","1","1","1"],["1","?","1","1"],["1","1","?","1"],["1","1","1","?"],["?","2","2","2"],["2","?","2","2"],["2","2","?","2"],["2","2","2","?"]]:
+            if "1" in temp:
+                list_of_potential_winning_symbols.append("1")
+            if "2" in temp:
+                list_of_potential_winning_symbols.append("2")
+        c_index += 1
+    return list_of_potential_winning_symbols
+
+def check_potential_win_two(any_list):
+    c_index = 0
+    list_of_potential_winning_symbols = []
+    while c_index < len(any_list) - 3:
+        temp = any_list[c_index: c_index + 4]
+        if temp in [["1","1","?","?"],["1","?","1","?"],["1","?","?","1"],["?","1","1","?"],["?","1","?","1"],["?","?","1","1"],["2","2","?","?"],["2","?","2","?"],["2","?","?","2"],["?","2","2","?"],["?","2","?","2"],["?","?","2","2"]]:
             if "1" in temp:
                 list_of_potential_winning_symbols.append("1")
             if "2" in temp:
