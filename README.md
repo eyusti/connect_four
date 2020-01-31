@@ -1,5 +1,5 @@
 # Connect Four AIs
-This is the second project in a series of projects to learn how to optimize game AIs. Click [here]https://github.com/eyusti/tic_tac_toe to check out that project and get more background.
+This is the second project in a series of projects to learn how to optimize game AIs. Click [here](https://github.com/eyusti/tic_tac_toe) to check out that project and get more background.
 
 I've chosen Connect Four as a follow-up to Tic Tac Toe because of its large state space (4,531,985,219,092). Because of the large state space, searching the entire tree to solve the game is infeasible. Like Tic Tac Toe, Connect Four is solved such that the first player should always win given perfect play from both players. The correct first move for perfect play to force this move is the center.
 
