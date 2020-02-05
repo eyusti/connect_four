@@ -4,6 +4,7 @@ from random import randint
 import math
 from copy import deepcopy
 
+
 class Board:
     def __init__(self):
         self.board = [["?" for column in range(7)]for row in range(6)]
@@ -88,7 +89,7 @@ class Board:
                 list_symb_winner_list.append(symb_winner_list)
 
         c_index = 0
-        r_index = 0
+        r_index = 1
         routine_index = 0
         
         #test_other_diagonal_win_other_loop
@@ -124,7 +125,7 @@ class Board:
                 list_symb_winner_list.append(symb_winner_list)
         
         c_index = 6
-        r_index = 0
+        r_index = 1
         routine_index = 0
         
         #test_diagonal_win
@@ -152,7 +153,7 @@ class Board:
        
 class Game:
     def __init__(self):
-        #can be RNG or MinMax
+        #Player can be string RNG or MinMax
         self.player1 = None
         self.p1_color = "1"
         self.player2 = None
@@ -160,15 +161,23 @@ class Game:
         self.current_turn = 1
         self.current_color = None
         self.board = Board()
+        self.max = 1000000000
+        self.min = -1000000000
+        
+        #These are flags
+        self.do_alpha_beta_pruning = True
+        self.discount = .99
+        self.set_heuristic_score = None
 
 # Game Setup
     def get_player_AI(self):
+        #this is out of date need to add minmax2_w
         print("Welcome to Connect Four! What AIs would you like to play against each other?")
         while True:
             try: 
-                self.player1 = input("Which AI would you like for player 1? (RNG / MinMax) ").lower()
-                while self.player1 not in ["rng","minmax"]:
-                    self.player1 = input("Sorry, that isn't an AI we have. Which AI would you like for player 1? (RNG / MinMax) ").lower()     
+                self.player1 = input("Which AI would you like for player 1? (RNG / MinMax2 / MinMax3) ").lower()
+                while self.player1 not in ["rng","minmax2","minmax3"]:
+                    self.player1 = input("Sorry, that isn't an AI we have. Which AI would you like for player 1? (RNG / MinMax2 / MinMax3) ").lower()     
             except ValueError:
                 print("I'm sorry Dave, I'm afraid I can't do that")
                 continue
@@ -176,9 +185,9 @@ class Game:
                 break
         while True:
             try: 
-                self.player2 = input("Which AI would you like for player 2? (RNG / MinMax) ").lower()
-                while self.player2 not in ["rng","minmax"]:
-                    self.player2 = input("Sorry, that isn't an AI we have. Which AI would you like for player 2? (RNG / MinMax) ").lower()     
+                self.player2 = input("Which AI would you like for player 2? (RNG / MinMax2 / MinMax3) ").lower()
+                while self.player2 not in ["rng","minmax","minmax3"]:
+                    self.player2 = input("Sorry, that isn't an AI we have. Which AI would you like for player 2? (RNG / MinMax2 / MinMax3) ").lower()     
             except ValueError:
                 print("I'm sorry Dave, I'm afraid I can't do that")
                 continue
@@ -204,30 +213,42 @@ class Game:
                 self.current_color = self.p1_color
             if self.current_turn == 2:
                 current_AI = self.player2
-                self.current_color = self.p2_color
-                
+                self.current_color = self.p2_color     
             
             if current_AI == "rng":
                 while True:
                     column = self.rng_move()
                     if self.board.does_column_have_space(column):
                         self.board.place(column, self.current_color)
-                        self.board.print_board()
+                        #self.board.print_board()
                         break
 
-            if current_AI == "minmax":
-                _score, column = self.min_max(self.board,self.current_color,5, -math.inf, math.inf)
+            if current_AI == "minmax3":
+                self.set_heuristic_score = check_potential_win
+                _score, column = self.min_max(self.board,self.current_color,4, -math.inf, math.inf)
                 self.board.place(column, self.current_color)
-                self.board.print_board()
+                #self.board.print_board()
+            
+            if current_AI == "minmax2":
+                self.set_heuristic_score = check_potential_win_two
+                _score, column = self.min_max(self.board,self.current_color,2, -math.inf, math.inf)
+                self.board.place(column, self.current_color)
+                #self.board.print_board()
+            
+            if current_AI == "minmax2_w":
+                self.set_heuristic_score = check_potential_win_two_weighted
+                _score, column = self.min_max(self.board,self.current_color,2, -math.inf, math.inf)
+                self.board.place(column, self.current_color)
+                #self.board.print_board()
 
             winner = self.board.provide_winner(self.board)
 
             if winner:
-                print("The game has been won by: Player " + winner[0][0])
+                #print("The game has been won by: Player " + winner[0][0])
                 return winner[0][0]
             
             if self.board.board_is_full():
-                print("The game is a tie")
+                #print("The game is a tie")
                 return "tie"
 
             self.switch_current_player()
@@ -240,9 +261,9 @@ class Game:
     def min_max(self, board, player, depth, alpha, beta):
         winner = board.provide_winner(board)
         if winner == [[self.current_color]]:
-            return math.inf, None
+            return self.max, None
         if winner:
-            return -math.inf, None
+            return self.min, None
         if not winner and board.board_is_full():
             return 0, None
         if depth == 0:
@@ -251,28 +272,30 @@ class Game:
         all_move_boards = board.get_all_moves(player)
 
         if player is self.current_color:
-            maxEval = -math.inf
-            best_column = 11
+            maxEval = self.min
+            best_column = all_move_boards[0][1]
             for move_board, column in all_move_boards: 
                 eval, _column = self.min_max(move_board, self.get_opposite_symbol(player), depth - 1, alpha, beta)
-                maxEval = max(maxEval, eval)
-                alpha = max(alpha,maxEval)
-                if maxEval == eval:
+                eval *= .99
+                if eval > maxEval:
                     best_column = column
-                if alpha >= beta:
+                    maxEval = eval
+                alpha = max(alpha,maxEval)
+                if self.do_alpha_beta_pruning and alpha >= beta:
                     break
             return maxEval , best_column
 
         else:
-            minEval = math.inf
-            best_column = 11
+            minEval = self.max
+            best_column = all_move_boards[0][1]
             for move_board, column in all_move_boards:
                 eval, _column =  self.min_max(move_board, self.get_opposite_symbol(player), depth - 1, alpha, beta)
-                minEval = min(minEval,eval)
-                beta = min(beta, minEval)
-                if minEval == eval:
+                eval *= .99
+                if eval < minEval:
                     best_column = column
-                if alpha >= beta:
+                    minEval = eval
+                beta = min(beta, minEval)
+                if self.do_alpha_beta_pruning and alpha >= beta:
                     break
             return minEval , best_column
 
@@ -286,9 +309,9 @@ class Game:
     def heuristic_score(self,board):
         count_1 = 0
         count_2 = 0
-        temp_row = board.check_row(check_potential_win,board)
-        temp_column = board.check_column(check_potential_win,board)
-        temp_diagonal = board.check_diagonals(check_potential_win,board)
+        temp_row = board.check_row(self.set_heuristic_score,board)
+        temp_column = board.check_column(self.set_heuristic_score,board)
+        temp_diagonal = board.check_diagonals(self.set_heuristic_score,board)
 
         if temp_row:
             for i in range(len(temp_row)):
@@ -342,10 +365,32 @@ def check_potential_win_two(any_list):
     list_of_potential_winning_symbols = []
     while c_index < len(any_list) - 3:
         temp = any_list[c_index: c_index + 4]
+        if temp in [["1","1","?","?"],["1","?","1","?"],["1","?","?","1"],["?","1","1","?"],["?","1","?","1"],["?","?","1","1"],["2","2","?","?"],["2","?","2","?"],["2","?","?","2"],["?","2","2","?"],["?","2","?","2"],["?","?","2","2"],["?","1","1","1"],["1","?","1","1"],["1","1","?","1"],["1","1","1","?"],["?","2","2","2"],["2","?","2","2"],["2","2","?","2"],["2","2","2","?"]]:
+            if "1" in temp:
+                list_of_potential_winning_symbols.append("1")
+            if "2" in temp:
+                list_of_potential_winning_symbols.append("2")
+        c_index += 1
+    return list_of_potential_winning_symbols
+
+def check_potential_win_two_weighted(any_list):
+    c_index = 0
+    list_of_potential_winning_symbols = []
+    while c_index < len(any_list) - 3:
+        temp = any_list[c_index: c_index + 4]
         if temp in [["1","1","?","?"],["1","?","1","?"],["1","?","?","1"],["?","1","1","?"],["?","1","?","1"],["?","?","1","1"],["2","2","?","?"],["2","?","2","?"],["2","?","?","2"],["?","2","2","?"],["?","2","?","2"],["?","?","2","2"]]:
             if "1" in temp:
                 list_of_potential_winning_symbols.append("1")
             if "2" in temp:
+                list_of_potential_winning_symbols.append("2")
+        if temp in [["?","1","1","1"],["1","?","1","1"],["1","1","?","1"],["1","1","1","?"],["?","2","2","2"],["2","?","2","2"],["2","2","?","2"],["2","2","2","?"]]:
+            if "1" in temp:
+                list_of_potential_winning_symbols.append("1")
+                list_of_potential_winning_symbols.append("1")
+                list_of_potential_winning_symbols.append("1")
+            if "2" in temp:
+                list_of_potential_winning_symbols.append("2")
+                list_of_potential_winning_symbols.append("2")
                 list_of_potential_winning_symbols.append("2")
         c_index += 1
     return list_of_potential_winning_symbols

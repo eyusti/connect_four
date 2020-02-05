@@ -2,91 +2,6 @@ import pytest
 import math
 from connect_four import Board, Game, check_four_consecutive,check_potential_win
 
-# Game AI Test Cases
-def test_minmax_winning_board_scoring():
-    new_game = Game()
-    new_game.current_color = "1"
-    new_game.board.board = [
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '1', '?', '?', '?'],
-        ['?', '?', '?', '1', '2', '?', '?'],
-        ['?', '?', '?', '1', '2', '?', '?'],
-        ['?', '?', '?', '1', '2', '?', '?']]
-    assert new_game.min_max(new_game.board, "1", 4, -math.inf, math.inf) == (math.inf, None)
-
-def test_minmax_losing_board_scoring():
-    new_game = Game()
-    new_game.current_color = "1"
-    new_game.board.board = [
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '?', '?', '2', '?', '?'],
-        ['?', '?', '?', '1', '2', '?', '?'],
-        ['?', '?', '?', '1', '2', '?', '?'],
-        ['?', '?', '1', '1', '2', '?', '?']]
-    assert new_game.min_max(new_game.board, "1", 4, -math.inf, math.inf) == (-math.inf, None)
-
-def test_minmax_tied_board_scoring():
-    new_game = Game()
-    new_game.current_color = "1"
-    new_game.board.board = [
-        ['1', '2', '1', '2', '1', '2', '1'],
-        ['1', '2', '1', '1', '1', '2', '1'],
-        ['2', '1', '2', '2', '2', '1', '2'],
-        ['1', '2', '1', '1', '1', '2', '1'],
-        ['2', '1', '2', '2', '2', '1', '2'],
-        ['2', '1', '2', '1', '2', '1', '2']]
-    assert new_game.min_max(new_game.board, "1", 4, -math.inf, math.inf) == (0, None)
-
-def test_minmax_maximizer_win():
-    new_game = Game()
-    new_game.current_color = "1"
-    new_game.board.board = [
-        ['1', '1', '1', '2', '2', '2', '?'],
-        ['2', '2', '2', '1', '1', '1', '?'],
-        ['1', '1', '1', '2', '2', '2', '1'],
-        ['2', '2', '2', '1', '1', '1', '2'],
-        ['1', '1', '1', '2', '2', '2', '1'],
-        ['2', '2', '2', '1', '1', '1', '2']]
-    assert new_game.min_max(new_game.board,"1", 4, -math.inf, math.inf) == (math.inf,6)
-    
-def test_minmax_maximizer_lose():
-    new_game = Game()
-    new_game.current_color = "1"
-    new_game.board.board = [
-        ['1', '1', '1', '2', '?', '2', '?'],
-        ['2', '2', '2', '1', '?', '1', '?'],
-        ['1', '1', '1', '2', '2', '2', '1'],
-        ['2', '2', '2', '1', '1', '1', '2'],
-        ['1', '1', '1', '2', '2', '2', '1'],
-        ['2', '2', '2', '1', '1', '1', '2']]
-    assert new_game.min_max(new_game.board,"2", 4, -math.inf, math.inf) == (-math.inf,4)
-    
-def test_minmax_maximizer_tie():
-    new_game = Game()
-    new_game.current_color = "1"
-    new_game.board.board = [
-        ['1', '2', '1', '2', '1', '2', '?'],
-        ['1', '2', '1', '1', '1', '2', '1'],
-        ['2', '1', '2', '2', '2', '1', '2'],
-        ['1', '2', '1', '1', '1', '2', '1'],
-        ['2', '1', '2', '2', '2', '1', '2'],
-        ['2', '1', '2', '1', '2', '1', '2']]
-    assert new_game.min_max(new_game.board,"1", 4, -math.inf, math.inf) == (0,6)
-
-def test_minmax_is_it_returning_first_column_checked():
-    new_game = Game()
-    new_game.current_color = "1"
-    new_game.board.board = [
-        ['?', '?', '1', '2', '1', '2', '1'],
-        ['1', '?', '1', '1', '1', '2', '1'],
-        ['2', '1', '2', '2', '2', '1', '2'],
-        ['1', '2', '1', '1', '1', '2', '1'],
-        ['2', '1', '2', '2', '2', '1', '2'],
-        ['2', '1', '2', '1', '2', '1', '2']]
-    assert new_game.min_max(new_game.board,"1", 8, -math.inf, math.inf) == (math.inf,1)
-
 # Game AI Helpers
 def test_get_opposite_symbol():
     game = Game()
@@ -99,6 +14,7 @@ def test_check_potential_win():
 def test_heuristic_simple():
     game = Game()
     board = Board()
+    game.set_heuristic_score = check_potential_win
     board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
@@ -111,11 +27,38 @@ def test_heuristic_simple():
 def test_heuristic_complex():
     game = Game()
     board = Board()
+    game.set_heuristic_score = check_potential_win
     board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '2', '?', '2', '?', '?'],
+        ['?', '?', '1', '?', '1', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
-        ['?', '?', '2', '?', '2', '2', '?'],
-        ['?', '2', '2', '?', '2', '?', '?']]
-    assert game.heuristic_score(board) == -6
+        ['?', '?', '1', '?', '1', '1', '?'],
+        ['?', '1', '1', '?', '1', '?', '?']]
+    assert game.heuristic_score(board) == 5
+
+def test_heuristic_is_diagonal_getting_double_counted():
+    game = Game()
+    board = Board()
+    game.set_heuristic_score = check_potential_win
+    board.board = [
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '1', '?', '?', '?', '?', '?'],
+        ['?', '?', '1', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '1', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?']]
+    assert game.heuristic_score(board) == 1
+
+def test_heuristic_is_diagonal_getting_double_counted_2():
+    game = Game()
+    board = Board()
+    game.set_heuristic_score = check_potential_win
+    board.board = [
+        ['?', '?', '?', '?', '?', '?', '1'],
+        ['?', '?', '?', '?', '?', '1', '?'],
+        ['?', '?', '?', '?', '1', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?']]
+    assert game.heuristic_score(board) == 1
