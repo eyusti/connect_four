@@ -153,7 +153,7 @@ class Board:
        
 class Game:
     def __init__(self):
-        #Player can be string RNG or MinMax
+        #Player can be string of name of AI
         self.player1 = None
         self.p1_color = "1"
         self.player2 = None
@@ -222,24 +222,38 @@ class Game:
                         self.board.place(column, self.current_color)
                         #self.board.print_board()
                         break
-
+            
             if current_AI == "minmax3":
+                #checks permutations of three
                 self.set_heuristic_score = check_potential_win
                 _score, column = self.min_max(self.board,self.current_color,4, -math.inf, math.inf)
                 self.board.place(column, self.current_color)
                 #self.board.print_board()
             
             if current_AI == "minmax2":
+                #checks permutations of two and three
                 self.set_heuristic_score = check_potential_win_two
                 _score, column = self.min_max(self.board,self.current_color,2, -math.inf, math.inf)
                 self.board.place(column, self.current_color)
                 #self.board.print_board()
             
             if current_AI == "minmax2_w":
+                #checks permutations of two and three with three more heavily
                 self.set_heuristic_score = check_potential_win_two_weighted
                 _score, column = self.min_max(self.board,self.current_color,2, -math.inf, math.inf)
                 self.board.place(column, self.current_color)
                 #self.board.print_board()
+            
+            if current_AI == "minmax2_w_f":
+                #checks permutations of two and three with three more heavily, makes first move in middle
+                if self.board.board[5][3] == "?":
+                    self.board.place(3, self.current_color)
+                    self.board.print_board()
+                else:
+                    self.set_heuristic_score = check_potential_win_two_weighted
+                    _score, column = self.min_max(self.board,self.current_color,2, -math.inf, math.inf)
+                    self.board.place(column, self.current_color)
+                    self.board.print_board()
 
             winner = self.board.provide_winner(self.board)
 

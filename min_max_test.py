@@ -1,6 +1,6 @@
 import pytest
 import math
-from connect_four import Board, Game, check_four_consecutive,check_potential_win
+from connect_four import Board, Game, check_four_consecutive,check_potential_win,check_potential_win_two_weighted
 
 def test_minmax_winning_board_scoring():
     new_game = Game()
@@ -104,6 +104,21 @@ def test_minmax_just_returning_last_column_checked():
     _score, column = new_game.min_max(new_game.board,"1", 8, -math.inf, math.inf)
     assert  column == 1
 
+def test_minmax_diminishing_future_returns():
+    new_game = Game()
+    new_game.current_color = "2"
+    new_game.set_heuristic_score = check_potential_win
+    new_game.board.board = [
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['2', '?', '1', '?', '?', '?', '?'],
+        ['1', '?', '1', '?', '?', '2', '?'],
+        ['2', '?', '2', '1', '?', '1', '?'],
+        ['2', '?', '1', '2', '?', '1', '?'],
+        ['2', '?', '2', '1', '1', '1', '2']]
+    _score, column = new_game.min_max(new_game.board,"2", 5, -math.inf, math.inf)
+    assert column == 4
+
+@pytest.mark.skip(reason="was for debugging, no need for regular run")
 def test_minmax_alpha_beta_breaking_min_max():
     alpha_beta = Game()
     min_max = Game()
@@ -133,7 +148,7 @@ def test_minmax_alpha_beta_breaking_min_max():
     assert column_1 == column_2
     assert column_1 == 1
     assert column_2 == 1
-
+@pytest.mark.skip(reason="was for debugging, no need for regular run")
 def test_minmax_alpha_beta_breaking_min_max_block():
     alpha_beta = Game()
     min_max = Game()
@@ -163,33 +178,3 @@ def test_minmax_alpha_beta_breaking_min_max_block():
     assert column_1 == column_2
     assert column_1 == 1
     assert column_2 == 1
-
-def test_minmax_diminishing_future_returns():
-    new_game = Game()
-    new_game.current_color = "2"
-    new_game.set_heuristic_score = check_potential_win
-    new_game.board.board = [
-        ['?', '?', '?', '?', '?', '?', '?'],
-        ['2', '?', '1', '?', '?', '?', '?'],
-        ['1', '?', '1', '?', '?', '2', '?'],
-        ['2', '?', '2', '1', '?', '1', '?'],
-        ['2', '?', '1', '2', '?', '1', '?'],
-        ['2', '?', '2', '1', '1', '1', '2']]
-    _score, column = new_game.min_max(new_game.board,"2", 5, -math.inf, math.inf)
-    assert column == 4
-
-def test_minmax_depth_three():
-    new_game = Game()
-    new_game.current_color = "2"
-    new_game.current_turn = 2
-    new_game.set_heuristic_score = check_potential_win
-    new_game.board.board = [
-        ['2', '?', '?', '?', '1', '?', '?'],
-        ['2', '?', '?', '?', '1', '?', '?'],
-        ['1', '2', '?', '?', '2', '?', '?'],
-        ['2', '1', '?', '?', '1', '?', '?'],
-        ['1', '2', '?', '?', '1', '?', '?'],
-        ['2', '2', '?', '1', '1', '?', '?']]
-    _score, column = new_game.min_max(new_game.board,"2", 3, -math.inf, math.inf)
-    assert column == 3
-
