@@ -226,14 +226,14 @@ class Game:
             if current_AI == "minmax3":
                 #checks permutations of three
                 self.set_heuristic_score = check_potential_win
-                _score, column = self.min_max(self.board,self.current_color,4, -math.inf, math.inf)
+                _score, column = self.min_max(self.board,self.current_color,3, -math.inf, math.inf)
                 self.board.place(column, self.current_color)
                 #self.board.print_board()
             
             if current_AI == "minmax2":
                 #checks permutations of two and three
                 self.set_heuristic_score = check_potential_win_two
-                _score, column = self.min_max(self.board,self.current_color,2, -math.inf, math.inf)
+                _score, column = self.min_max(self.board,self.current_color,3, -math.inf, math.inf)
                 self.board.place(column, self.current_color)
                 #self.board.print_board()
             
