@@ -1,6 +1,6 @@
 import pytest
 from connect_four import Board
-from monte_carlo import Node, ucb_scoring, traverse, best_move, best_ucb, fully_expanded, pick_unvisited, traverse
+from monte_carlo import Node, ucb_scoring, traverse, best_move, best_ucb, fully_expanded, pick_unvisited, traverse, rollout_policy, rollout, is_root
 
 board = Board()
 board.board = [
@@ -60,7 +60,7 @@ def test_best_move():
 
     assert best_move(root) == 2
 
-# Traverse Helpers
+# Traverse Tests
 def test_ucb_score():
     root = Node (None,score = 30, times_visited = 2 )
     test_node = Node(None,score = 20, times_visited = 1)
@@ -140,3 +140,49 @@ def test_traverse():
     root.children.append(test_node_two)
 
     assert traverse(root) == test_node_3
+
+# Rollout Tests
+def test_rollout_policy():
+    root = Node(None)
+    root.board.board = [
+        ['1', '?', '1', '2', '1', '2', '?'],
+        ['1', '2', '1', '1', '1', '2', '1'],
+        ['2', '1', '2', '2', '2', '1', '2'],
+        ['1', '2', '1', '1', '1', '2', '1'],
+        ['2', '1', '2', '2', '2', '1', '2'],
+        ['2', '1', '2', '1', '2', '1', '2']]  
+    node = rollout_policy(root, "2") 
+    assert node.board.board == [
+        ['1', '2', '1', '2', '1', '2', '?'],
+        ['1', '2', '1', '1', '1', '2', '1'],
+        ['2', '1', '2', '2', '2', '1', '2'],
+        ['1', '2', '1', '1', '1', '2', '1'],
+        ['2', '1', '2', '2', '2', '1', '2'],
+        ['2', '1', '2', '1', '2', '1', '2']]  or [
+        ['1', '?', '1', '2', '1', '2', '2'],
+        ['1', '2', '1', '1', '1', '2', '1'],
+        ['2', '1', '2', '2', '2', '1', '2'],
+        ['1', '2', '1', '1', '1', '2', '1'],
+        ['2', '1', '2', '2', '2', '1', '2'],
+        ['2', '1', '2', '1', '2', '1', '2']]  
+
+# Note for future self, this is probably going to have a bug at a further depth but i can't figure out how to test it. Sorry.
+def test_rollout():
+    root = Node(None)
+    root.board.board = [
+        ['1', '2', '1', '2', '1', '2', '?'],
+        ['1', '2', '1', '1', '1', '2', '1'],
+        ['2', '1', '2', '2', '2', '1', '2'],
+        ['1', '2', '1', '1', '1', '2', '1'],
+        ['2', '1', '2', '2', '2', '1', '2'],
+        ['2', '1', '2', '1', '2', '1', '2']]
+    assert rollout(root,"1") == 0
+
+def test_is_root_true():
+    root = Node(None)
+    assert is_root(root) == True
+
+def test_is_root_false():
+    root = Node(None)
+    node1 = Node(None, parent_node=root)
+    assert is_root(node1) == False

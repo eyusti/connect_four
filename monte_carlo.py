@@ -10,7 +10,7 @@ def monte_carlo_tree_search(current_board, current_player):
 
     while num_rollouts > 0 :
         node_to_expand = traverse(root)
-        score = rollout(node_to_expand)
+        score = rollout(node_to_expand, current_player)
         backpropogate_scores(node_to_expand, score)
         
         num_rollouts -= 1
@@ -23,13 +23,31 @@ def traverse(node):
         node = best_ucb(node)
     return pick_unvisited(node) or node
 
-def rollout(node):
-    while not_terminal(node):
-        node = rollout_policy(node)
-    return result(node)
+def rollout(node, current_player):
+    winner = node.board.provide_winner(node.board)
+    tie = node.board.board_is_full()
+    turn = current_player
+    new_node = node
+
+    while not winner and not tie:
+        new_node = rollout_policy(new_node, turn)
+        turn = switch_turns(turn)
+        winner = new_node.board.provide_winner(new_node.board)
+        tie = new_node.board.board_is_full()
+
+    if winner == current_player:
+        return 1
+    if tie:
+        return 0
+    else:
+        return -1
 
 def backpropogate_scores(node, score):
-    pass
+    if is_root(node):
+        return
+    
+    update_stats(node,score)
+    backpropogate_scores(node.parent,score)
 
 ### Helper Methods ###
 class Node:
@@ -49,7 +67,7 @@ class Node:
             if self.board.does_column_have_space(column):
                 new_board = deepcopy(self.board)
                 new_board.place(column,player)
-                new_node = Node(new_board,column)
+                new_node = Node(column, board = new_board, parent_node = self)
                 self.add_child(new_node)
 
     def is_leaf(self):
@@ -93,3 +111,23 @@ def pick_unvisited(node):
             possible_children.append(child)
     index = randint(0, len(possible_children)-1)
     return possible_children[index]
+
+# Rollout Helpers
+def switch_turns(current_player):
+    if current_player == "1":
+        return "2"
+    else:
+        return "1"
+
+def rollout_policy(node, turn):
+    node.get_children_nodes(turn)
+    index = randint(0,len(node.children)-1)
+    return node.children[index]
+
+# Backpropogate Helpers
+
+def is_root(node):
+    return
+
+def update_stats(node,score):
+    return
