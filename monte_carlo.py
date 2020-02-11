@@ -127,7 +127,8 @@ def rollout_policy(node, turn):
 # Backpropogate Helpers
 
 def is_root(node):
-    return
+    return node.parent_node == None
 
 def update_stats(node,score):
-    return
+    node.score += score
+    node.times_visited += 1
