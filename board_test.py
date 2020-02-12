@@ -1,6 +1,7 @@
 import pytest
 import math
-from connect_four import Board, Game, check_four_consecutive,check_potential_win
+from connect_four import Game
+from board import Board, check_four_consecutive, check_potential_win
 
 # Board utility test cases
 def test_get_all_moves():

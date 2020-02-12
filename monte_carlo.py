@@ -1,17 +1,18 @@
 from copy import deepcopy
-from connect_four import Board
+from board import Board
 from math import sqrt , log, inf
 from random import randint
 
 def monte_carlo_tree_search(current_board, current_player):
     #need to replace this with a better metric for resources left
-    num_rollouts = 1000
+    num_rollouts = 100
     root = Node(None, board = current_board)
+    root.get_children_nodes(current_player)
 
     while num_rollouts > 0 :
         node_to_expand = traverse(root)
-        score = rollout(node_to_expand, current_player)
-        backpropogate_scores(node_to_expand, score)
+        score, final_node = rollout(node_to_expand, current_player)
+        backpropogate_scores(final_node, score)
         
         num_rollouts -= 1
     
@@ -19,14 +20,20 @@ def monte_carlo_tree_search(current_board, current_player):
 
 # Main Methods
 def traverse(node):
-    while fully_expanded(node):
-        node = best_ucb(node)
-    return pick_unvisited(node) or node
+    current_node = node
+    while fully_expanded(current_node):
+        current_node = best_ucb(current_node)
+    return pick_unvisited(current_node) or current_node
 
 def rollout(node, current_player):
     winner = node.board.provide_winner(node.board)
     tie = node.board.board_is_full()
     turn = current_player
+    
+    # This feels bad but i'm too tired to figure out why, it might actually be based on root not player
+    if current_player == "2":
+        turn = switch_turns(turn)
+
     new_node = node
 
     while not winner and not tie:
@@ -35,19 +42,20 @@ def rollout(node, current_player):
         winner = new_node.board.provide_winner(new_node.board)
         tie = new_node.board.board_is_full()
 
-    if winner == current_player:
-        return 1
+    if winner == [[current_player]]:
+        return 1, new_node
     if tie:
-        return 0
+        return 0, new_node
     else:
-        return -1
+        return -1, new_node
 
 def backpropogate_scores(node, score):
     if is_root(node):
+        node.times_visited += 1
         return
     
     update_stats(node,score)
-    backpropogate_scores(node.parent,score)
+    backpropogate_scores(node.parent_node,score)
 
 ### Helper Methods ###
 class Node:
@@ -99,12 +107,19 @@ def best_ucb(node):
     return best_node
 
 def fully_expanded(node):
+    # is this going to lead to a loop
+    if node.children == []:
+        return False
+    
     for child in node.children:
         if child.times_visited == 0:
             return False
+
     return True
 
 def pick_unvisited(node):
+    if node.children == []:
+        return None
     possible_children = []
     for child in node.children:
         if child.times_visited == 0:

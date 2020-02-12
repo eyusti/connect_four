@@ -1,6 +1,6 @@
 import pytest
-from connect_four import Board
-from monte_carlo import Node, ucb_scoring, traverse, best_move, best_ucb, fully_expanded, pick_unvisited, traverse, rollout_policy, rollout, is_root
+from board import Board
+from monte_carlo import Node, ucb_scoring, traverse, best_move, best_ucb, fully_expanded, pick_unvisited, traverse, rollout_policy, rollout, is_root, monte_carlo_tree_search
 
 board = Board()
 board.board = [
@@ -166,8 +166,9 @@ def test_rollout_policy():
         ['2', '1', '2', '2', '2', '1', '2'],
         ['2', '1', '2', '1', '2', '1', '2']]  
 
-# Note for future self, this is probably going to have a bug at a further depth but i can't figure out how to test it. Sorry.
 def test_rollout():
+    # Note for future self, this is probably going to have a bug at a further depth but i can't figure out how to test it. Sorry.
+    # Turn switching logic seems very sketchy here
     root = Node(None)
     root.board.board = [
         ['1', '2', '1', '2', '1', '2', '?'],
@@ -176,7 +177,8 @@ def test_rollout():
         ['1', '2', '1', '1', '1', '2', '1'],
         ['2', '1', '2', '2', '2', '1', '2'],
         ['2', '1', '2', '1', '2', '1', '2']]
-    assert rollout(root,"1") == 0
+    score, _node = rollout(root,"1")
+    assert  score == 0
 
 def test_is_root_true():
     root = Node(None)
@@ -186,3 +188,15 @@ def test_is_root_false():
     root = Node(None)
     node1 = Node(None, parent_node=root)
     assert is_root(node1) == False
+
+# None Error debugging
+def test_none_error():
+    test_board = Board()
+    test_board.board = [
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['2', '?', '?', '?', '?', '?', '?'],
+        ['2', '1', '2', '?', '?', '?', '2'],
+        ['2', '2', '1', '?', '?', '?', '1'],
+        ['1', '2', '1', '?', '1', '?', '1'],
+        ['2', '2', '1', '1', '2', '1', '1']]
+    assert  monte_carlo_tree_search(test_board,"2") == 0

@@ -1,6 +1,7 @@
 import pytest
 import math
-from connect_four import Board, Game, check_four_consecutive,check_potential_win, check_potential_win_two, check_potential_win_two_weighted
+from connect_four import Game
+from board import Board, check_four_consecutive,check_potential_win, check_potential_win_two, check_potential_win_two_weighted
 
 # Game AI Helpers
 def test_get_opposite_symbol():
