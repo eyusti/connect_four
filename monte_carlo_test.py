@@ -167,7 +167,6 @@ def test_rollout_policy():
         ['2', '1', '2', '1', '2', '1', '2']]  
 
 def test_rollout():
-    # Note for future self, this is probably going to have a bug at a further depth but i can't figure out how to test it. Sorry.
     # Turn switching logic seems very sketchy here
     root = Node(None)
     root.board.board = [

@@ -5,7 +5,7 @@ from random import randint
 
 def monte_carlo_tree_search(current_board, current_player):
     #need to replace this with a better metric for resources left
-    num_rollouts = 100
+    num_rollouts = 10
     root = Node(None, board = current_board)
     root.get_children_nodes(current_player)
 
@@ -29,16 +29,11 @@ def rollout(node, current_player):
     winner = node.board.provide_winner(node.board)
     tie = node.board.board_is_full()
     turn = current_player
-    
-    # This feels bad but i'm too tired to figure out why, it might actually be based on root not player
-    if current_player == "2":
-        turn = switch_turns(turn)
-
     new_node = node
 
     while not winner and not tie:
-        new_node = rollout_policy(new_node, turn)
         turn = switch_turns(turn)
+        new_node = rollout_policy(new_node, turn)
         winner = new_node.board.provide_winner(new_node.board)
         tie = new_node.board.board_is_full()
 
@@ -107,7 +102,6 @@ def best_ucb(node):
     return best_node
 
 def fully_expanded(node):
-    # is this going to lead to a loop
     if node.children == []:
         return False
     
