@@ -16,7 +16,7 @@ This heuristic always beats RNG as player one at a depth of 1.
 
 > Known Issue: This implementations has an issue where scoring counts permutations multiple times that should really only be scored as one opportunity such as `?xx?xx?`
 
-## Monte Carlo Game Tree Search(MCGTS)
+### Monte Carlo Game Tree Search(MCGTS)
 The second AI I built uses purely a Monte Carlo Game Tree search to find the best next move. I used this [tutorial](https://int8.io/monte-carlo-tree-search-beginners-guide/) and highly recommend it. There were a few things that were non-obvious to me around how to apply this tutorial specifically around Connect Four:
 
 1. Don't score losses as negative. My mind defaulted to this scoring system since I build this directly after minmax which scores wins as 1, ties as 0 and losses as -1. I currently score wins as 1, ties as .1 and losses as 0.
