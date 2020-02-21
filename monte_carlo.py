@@ -2,18 +2,19 @@ from copy import deepcopy
 from board import Board
 from math import sqrt , log, inf
 from random import randint
+from time import sleep
 
 def monte_carlo_tree_search(current_board, current_player):
     #need to replace this with a better metric for resources left
-    num_rollouts = 10
+    num_rollouts = 500
     root = Node(None, board = current_board)
     root.get_children_nodes(current_player)
 
     while num_rollouts > 0 :
         node_to_expand = traverse(root)
-        score, final_node = rollout(node_to_expand, current_player)
-        backpropogate_scores(final_node, score)
-        
+        winner, final_node = rollout(node_to_expand, current_player)
+        #print(winner)
+        backpropogate_scores(final_node, winner)
         num_rollouts -= 1
     
     return best_move(root)
@@ -37,30 +38,29 @@ def rollout(node, current_player):
         winner = new_node.board.provide_winner(new_node.board)
         tie = new_node.board.board_is_full()
 
-    if winner == [[current_player]]:
-        return 1, new_node
-    if tie:
-        return 0, new_node
-    else:
-        return -1, new_node
+    if tie and not winner:
+        winner = [["0"]]
 
-def backpropogate_scores(node, score):
+    return winner[0][0], new_node
+
+def backpropogate_scores(node, winner):
     if is_root(node):
         node.times_visited += 1
         return
     
-    update_stats(node,score)
-    backpropogate_scores(node.parent_node,score)
+    update_stats(node,winner)
+    backpropogate_scores(node.parent_node,winner)
 
 ### Helper Methods ###
 class Node:
-    def __init__(self, move, board = Board(), score = 0,times_visited = 0, parent_node = None):
+    def __init__(self, move, board = Board(), score = 0,times_visited = 0, parent_node = None, turn = None):
         self.score = score
         self.times_visited = times_visited
         self.children = []
         self.board = board
         self.column = move
         self.parent_node = parent_node
+        self.turn = turn
     
     def add_child(self,child_node):
         self.children.append(child_node)
@@ -70,7 +70,7 @@ class Node:
             if self.board.does_column_have_space(column):
                 new_board = deepcopy(self.board)
                 new_board.place(column,player)
-                new_node = Node(column, board = new_board, parent_node = self)
+                new_node = Node(column, board = new_board, parent_node = self, turn = player)
                 self.add_child(new_node)
 
     def is_leaf(self):
@@ -88,7 +88,7 @@ def best_move(root):
 
 # Traverse Helpers
 def ucb_scoring(node):
-    score = (node.score/node.times_visited) + 2 * sqrt(log(node.parent_node.times_visited)/node.times_visited)
+    score = (node.score/node.times_visited) + sqrt(2) * sqrt(log(node.parent_node.times_visited)/node.times_visited)
     return score
 
 def best_ucb(node):
@@ -138,6 +138,11 @@ def rollout_policy(node, turn):
 def is_root(node):
     return node.parent_node == None
 
-def update_stats(node,score):
-    node.score += score
+def update_stats(node,winner):
+    if node.turn == winner:
+        node.score += 1
+
+    if winner == "0":
+        node.score += 0.1
+
     node.times_visited += 1

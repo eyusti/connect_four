@@ -61,17 +61,6 @@ def test_best_move():
     assert best_move(root) == 2
 
 # Traverse Tests
-def test_ucb_score():
-    root = Node (None,score = 30, times_visited = 2 )
-    test_node = Node(None,score = 20, times_visited = 1)
-    test_node.parent_node = root
-    test_node_two = Node(None, score = 10, times_visited = 1)
-    test_node_two.parent_node = root
-    root.children.append(test_node)
-    root.children.append(test_node_two)
-    assert round(ucb_scoring(test_node),2) == 21.67
-    assert round(ucb_scoring(test_node_two),2) == 11.67
-
 def test_best_ucb():
     root = Node(None,score = 30, times_visited = 2 )
     test_node = Node(None,score = 20, times_visited = 1)
@@ -167,7 +156,6 @@ def test_rollout_policy():
         ['2', '1', '2', '1', '2', '1', '2']]  
 
 def test_rollout():
-    # Turn switching logic seems very sketchy here
     root = Node(None)
     root.board.board = [
         ['1', '2', '1', '2', '1', '2', '?'],
@@ -176,8 +164,8 @@ def test_rollout():
         ['1', '2', '1', '1', '1', '2', '1'],
         ['2', '1', '2', '2', '2', '1', '2'],
         ['2', '1', '2', '1', '2', '1', '2']]
-    score, _node = rollout(root,"1")
-    assert  score == 0
+    winner, _node = rollout(root,"1")
+    assert  winner == "0"
 
 def test_is_root_true():
     root = Node(None)
@@ -188,7 +176,7 @@ def test_is_root_false():
     node1 = Node(None, parent_node=root)
     assert is_root(node1) == False
 
-# None Error debugging
+# Error debugging
 def test_none_error():
     test_board = Board()
     test_board.board = [
@@ -199,3 +187,25 @@ def test_none_error():
         ['1', '2', '1', '?', '1', '?', '1'],
         ['2', '2', '1', '1', '2', '1', '1']]
     assert  monte_carlo_tree_search(test_board,"2") == 0
+
+def test_incorrect_play():
+    test_board = Board()
+    test_board.board = [
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['1', '2', '?', '?', '?', '?', '?'],
+        ['2', '2', '?', '?', '?', '?', '?'],
+        ['2', '2', '?', '?', '?', '?', '?'],
+        ['1', '1', '?', '1', '?', '?', '?'],
+        ['1', '1', '?', '2', '?', '?', '?']]
+    assert  monte_carlo_tree_search(test_board,"1") == 1
+
+def test_other_none_error():
+    test_board = Board()
+    test_board.board = [
+        ['2', '?', '1', '2', '2', '1', '?'],
+        ['1', '?', '1', '2', '2', '1', '?'],
+        ['2', '?', '2', '1', '1', '2', '?'],
+        ['1', '?', '2', '2', '2', '1', '?'],
+        ['2', '?', '1', '1', '1', '2', '2'],
+        ['1', '?', '2', '1', '2', '1', '1']]
+    assert  monte_carlo_tree_search(test_board,"1") == 6

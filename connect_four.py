@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from random import randint
 import math
-from board import Board
+from board import Board, check_potential_win, check_potential_win_two, check_potential_win_two_weighted
 from monte_carlo import monte_carlo_tree_search
        
 class Game:
@@ -73,9 +73,14 @@ class Game:
                     column = self.rng_move()
                     if self.board.does_column_have_space(column):
                         self.board.place(column, self.current_color)
-                        self.board.print_board()
+                        #self.board.print_board()
                         break
             
+            if current_AI == "human":
+                #checks permutations of three
+                column = int(input("where: "))
+                self.board.place(column, self.current_color)
+
             if current_AI == "minmax3":
                 #checks permutations of three
                 self.set_heuristic_score = check_potential_win
@@ -116,7 +121,7 @@ class Game:
             winner = self.board.provide_winner(self.board)
 
             if winner:
-                #print("The game has been won by: Player " + winner[0][0])
+                print("The game has been won by: Player " + winner[0][0])
                 return winner[0][0]
             
             if self.board.board_is_full():

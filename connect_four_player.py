@@ -3,7 +3,7 @@ from tabulate import tabulate
 import multiprocessing
 
 def play_games(player_1, player_2,label):
-    games_to_play_counter = 1
+    games_to_play_counter = 10
     games_to_play = games_to_play_counter
     all_games = []
 
@@ -25,10 +25,11 @@ def play_games(player_1, player_2,label):
     print(tabulate([[new_game.player1,"1", str(wins_player_1),str(percent_wins_player_1)],[new_game.player2,"2", str(wins_player_2),str(percent_wins_player_2)],["tie", None, str(ties),str(percent_ties)]],headers=["AI","Turn order","Games won","%"]))
 
 if __name__ == "__main__":
-    p1 = multiprocessing.Process(target=play_games, args=("montecarlo","rng","1000"))
-    #p2 = multiprocessing.Process(target=play_games, args=("montecarlo","rng","1000"))
-    #p3 = multiprocessing.Process(target=play_games, args=("minmax2_w","RNG","depth of 3"))
-    #p4 = multiprocessing.Process(target=play_games, args=("RNG","minmax2_w","depth of 3"))
+    # play_games("montecarlo", "human", "1")
+    p1 = multiprocessing.Process(target=play_games, args=("montecarlo","minmax2_w_f","100"))
+    #p2 = multiprocessing.Process(target=play_games, args=("montecarlo","minmax2_w_f","100"))
+    #p3 = multiprocessing.Process(target=play_games, args=("montecarlo","minmax2_w_f","100"))
+    #p4 = multiprocessing.Process(target=play_games, args=("montecarlo","minmax2_w_f","100"))
 
     p1.start()
     #p2.start()
