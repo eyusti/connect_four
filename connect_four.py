@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from random import randint
 import math
-from board import Board, check_potential_win, check_potential_win_two, check_potential_win_two_weighted
+from board import Board, check_potential_win, check_potential_win_two, check_potential_win_two_weighted, final_heuristic
 from monte_carlo import monte_carlo_tree_search
        
 class Game:
@@ -24,7 +24,7 @@ class Game:
 
 # Game Setup
     def get_player_AI(self):
-        #this is out of date need to add minmax2_w
+        #this is out of date 
         print("Welcome to Connect Four! What AIs would you like to play against each other?")
         while True:
             try: 
@@ -106,10 +106,21 @@ class Game:
                 #checks permutations of two and three with three more heavily, makes first move in middle
                 if self.board.board[5][3] == "?":
                     self.board.place(3, self.current_color)
-                    self.board.print_board()
+                    #self.board.print_board()
                 else:
                     self.set_heuristic_score = check_potential_win_two_weighted
                     _score, column = self.min_max(self.board,self.current_color,2, -math.inf, math.inf)
+                    self.board.place(column, self.current_color)
+                    #self.board.print_board()
+
+            if current_AI == "final_heuristic":
+                #checks permutations of one, two, three, and four, makes first move in middle
+                if self.board.board[5][3] == "?":
+                    self.board.place(3, self.current_color)
+                    self.board.print_board()
+                else:
+                    self.set_heuristic_score = final_heuristic
+                    _score, column = self.min_max(self.board,self.current_color, 2, -math.inf, math.inf)
                     self.board.place(column, self.current_color)
                     self.board.print_board()
 

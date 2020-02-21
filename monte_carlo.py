@@ -6,14 +6,13 @@ from time import sleep
 
 def monte_carlo_tree_search(current_board, current_player):
     #need to replace this with a better metric for resources left
-    num_rollouts = 500
+    num_rollouts = 1000
     root = Node(None, board = current_board)
     root.get_children_nodes(current_player)
 
     while num_rollouts > 0 :
         node_to_expand = traverse(root)
         winner, final_node = rollout(node_to_expand, current_player)
-        #print(winner)
         backpropogate_scores(final_node, winner)
         num_rollouts -= 1
     

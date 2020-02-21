@@ -207,3 +207,45 @@ def check_potential_win_two_weighted(any_list):
                 list_of_potential_winning_symbols.append("2")
         c_index += 1
     return list_of_potential_winning_symbols
+
+def final_heuristic(any_list):
+    c_index = 0
+    list_of_potential_winning_symbols = []
+    while c_index < len(any_list) - 3:
+        temp = any_list[c_index: c_index + 4]
+        if temp in [["1","?","?","?"],["?","1","?","?"],["?","?","1","?"],["?","?","?","1"],["2","?","?","?"],["?","2","?","?"],["?","?","2","?"],["?","?","?","2"]]:
+            if "1" in temp:
+                list_of_potential_winning_symbols.append("1")
+            if "2" in temp:
+                list_of_potential_winning_symbols.append("2")
+        if temp in [["1","1","?","?"],["1","?","1","?"],["1","?","?","1"],["?","1","1","?"],["?","1","?","1"],["?","?","1","1"],["2","2","?","?"],["2","?","2","?"],["2","?","?","2"],["?","2","2","?"],["?","2","?","2"],["?","?","2","2"]]:
+            if "1" in temp:
+                list_of_potential_winning_symbols.append("1")
+                list_of_potential_winning_symbols.append("1")
+            if "2" in temp:
+                list_of_potential_winning_symbols.append("2")
+                list_of_potential_winning_symbols.append("2")
+        if temp in [["?","1","1","1"],["1","?","1","1"],["1","1","?","1"],["1","1","1","?"],["?","2","2","2"],["2","?","2","2"],["2","2","?","2"],["2","2","2","?"]]:
+            if "1" in temp:
+                list_of_potential_winning_symbols.append("1")
+                list_of_potential_winning_symbols.append("1")
+                list_of_potential_winning_symbols.append("1")
+            if "2" in temp:
+                list_of_potential_winning_symbols.append("2")
+                list_of_potential_winning_symbols.append("2")
+                list_of_potential_winning_symbols.append("2")
+        if temp in [["1","1","1","1"],["2","2","2","2"]]:
+            if "1" in temp:
+                list_of_potential_winning_symbols.append("1")
+                list_of_potential_winning_symbols.append("1")
+                list_of_potential_winning_symbols.append("1")
+                list_of_potential_winning_symbols.append("1")
+                list_of_potential_winning_symbols.append("1")
+            if "2" in temp:
+                list_of_potential_winning_symbols.append("2")
+                list_of_potential_winning_symbols.append("2")
+                list_of_potential_winning_symbols.append("2")
+                list_of_potential_winning_symbols.append("2")
+                list_of_potential_winning_symbols.append("2")
+        c_index += 1
+    return list_of_potential_winning_symbols
