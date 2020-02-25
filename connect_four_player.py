@@ -24,18 +24,17 @@ def play_games(player_1, player_2):
     print(tabulate([[new_game.player1,"1", str(wins_player_1),str(percent_wins_player_1)],[new_game.player2,"2", str(wins_player_2),str(percent_wins_player_2)],["tie", None, str(ties),str(percent_ties)]],headers=["AI","Turn order","Games won","%"]))
 
 if __name__ == "__main__":
-    # play_games("montecarlo", "human", "1")
-    #p1 = multiprocessing.Process(target=play_games, args=("montecarlo","final_heuristic"))
-    p2 = multiprocessing.Process(target=play_games, args=("final_heuristic","montecarlo"))
-    #p3 = multiprocessing.Process(target=play_games, args=("montecarlo","minmax2_w_f"))
-    #p4 = multiprocessing.Process(target=play_games, args=("montecarlo","minmax2_w_f"))
+    p1 = multiprocessing.Process(target=play_games, args=("montecarlo","final_heuristic"))
+    #p2 = multiprocessing.Process(target=play_games, args=("montecarlo","final_heuristic"))
+    #p3 = multiprocessing.Process(target=play_games, args=("montecarlo","final_heuristic"))
+    #p4 = multiprocessing.Process(target=play_games, args=("montecarlo","final_heuristic"))
 
-    #p1.start()
-    p2.start()
+    p1.start()
+    #p2.start()
     #p3.start()
     #p4.start()
 
-    #p1.join()
-    p2.join()
+    p1.join()
+    #p2.join()
     #p3.join()
     #p4.join()

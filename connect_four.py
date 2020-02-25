@@ -78,7 +78,7 @@ class Game:
             
             if current_AI == "human":
                 #checks permutations of three
-                column = int(input("where: "))
+                column = int(input("Column: "))
                 self.board.place(column, self.current_color)
 
             if current_AI == "minmax3":
@@ -120,7 +120,7 @@ class Game:
                     self.board.print_board()
                 else:
                     self.set_heuristic_score = final_heuristic
-                    _score, column = self.min_max(self.board,self.current_color, 2, -math.inf, math.inf)
+                    _score, column = self.min_max(self.board,self.current_color, 5, -math.inf, math.inf)
                     self.board.place(column, self.current_color)
                     self.board.print_board()
 

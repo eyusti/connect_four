@@ -10,18 +10,18 @@ The first AI I built applies the same min-max algorithm from Tic Tac Toe. Howeve
 
 The heuristic I settled on checks for permutations of 1-4 player tokens and 3-0 playable spaces respectively for both players. So, it would look for formations like`["1", "1", "1", "1"], ["1", "1", "?" ,"1"], ["1", "?", "1", "?"], ["1", "?", "?", "?"]` for both players. It then assigns a value to the permutation: 5 for 4 player tokens, 3 for 3 player tokens and a playable space, 2 for 2 player tokens and 2 playable spaces, and 1 for 1 player tokens and 3 playable spaces. These value then have a discount applied based on when you actualize that value. So, if all turns appear to lead to losses, it would prefer the loss that is the furthest turn from now. Likewise, it prefers to win as soon as possible. It then scores a move based on the total value of your permutations minus the value of your opponenets total. 
 
-This heuristic always beats RNG as player one at a depth of 1. 
+This heuristic always beats RNG as player one at a depth of 1 and beats the Monte Carlo algorithm(playing 1000 rollouts) at a depth of 5.
 
 > The code allows you to adjust depth searched and the future discounting of permutations as well as some permutations of the heuristic I eventually settled on if you want to experiment.
 
 > Known Issue: This implementations has an issue where scoring counts permutations multiple times that should really only be scored as one opportunity such as `?xx?xx?`
 
-### Monte Carlo Game Tree Search(MCGTS)
-The second AI I built uses purely a Monte Carlo Game Tree search to find the best next move. I used this [tutorial](https://int8.io/monte-carlo-tree-search-beginners-guide/) and highly recommend it. There were a few things that were non-obvious to me around how to apply this tutorial specifically around Connect Four:
+### Monte Carlo Game Tree Search(MCTS)
+The second AI I built uses purely a Monte Carlo Tree search to find the best next move. I used this [tutorial](https://int8.io/monte-carlo-tree-search-beginners-guide/) and highly recommend it. There were a few things that were non-obvious to me around how to apply this tutorial specifically around Connect Four:
 
-1. Don't score losses as negative. My mind defaulted to this scoring system since I build this directly after minmax which scores wins as 1, ties as 0 and losses as -1. I currently score wins as 1, ties as .1 and losses as 0.
+1. Don't score losses as negative. My mind defaulted to this scoring system since I build this directly after minmax which scores wins as 1, ties as 0 and losses as -1. Since UCB averages scores, negatives end up appearing less bad. I currently score wins as 1, ties as .1 and losses as 0.
 
-2. I've seen some conflicting information about what constant to use in UCB with the general advice being to use whatever works for the problem you are working on. I've found the sqrt(2) worked well for Connect Four.
+2. I've seen some conflicting information about what constant to use in UCB with the general advice being to use whatever works for the problem you are working on. I've found the sqrt(2) worked well for Connect Four but since it is a constant chosen to fit the problem at hand, I think others will work as well.
 
-3. You have to consider the UCB relative to the player that took a turn that round when applying MCGTS to a competative game. There are a lot of tutorials that discuss MCGTS in the abstract and don't touch on this piece as a critical part of implementation.
+3. You have to consider the UCB relative to the player that took a turn that round when applying MCTS to a competative game. There are a lot of tutorials that discuss MCTS in the abstract and don't touch on this piece as a critical part of implementation.
 

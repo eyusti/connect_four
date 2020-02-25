@@ -34,10 +34,7 @@ class Board:
         return True
     
     def does_column_have_space(self, column):
-        for row in range(6):
-            if self.board[row][column] == "?":
-                return True
-        return False  
+        return self.board[0][column] == "?"
 
 # Win Checkers
     def check_row(self,function,board):
