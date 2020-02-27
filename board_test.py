@@ -91,7 +91,7 @@ def test_row_not_win():
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['2', '1', '2', '1', '2', '1', '2']]
-    assert board.check_row(check_four_consecutive,board) == None
+    assert board.check_row(check_four_consecutive) == None
 
 def test_row_win():
     board = Board()
@@ -102,7 +102,7 @@ def test_row_win():
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
         ['1', '1', '2', '2', '2', '2', '1']]
-    assert board.check_row(check_four_consecutive,board) == [["2"]]
+    assert board.check_row(check_four_consecutive) == [["2"]]
 
 def test_column_win():
     board = Board()
@@ -113,7 +113,7 @@ def test_column_win():
         ['?', '?', '?', '?', '?', '2', '1'],
         ['?', '?', '?', '?', '?', '2', '1'],
         ['?', '?', '?', '?', '?', '2', '1']]
-    assert board.check_column(check_four_consecutive,board) == [["1"]]
+    assert board.check_column(check_four_consecutive) == [["1"]]
 
 def test_column_not_win():
     board = Board()
@@ -124,7 +124,7 @@ def test_column_not_win():
         ['?', '?', '?', '?', '?', '?', '1'],
         ['?', '?', '?', '?', '?', '2', '1'],
         ['?', '?', '?', '?', '?', '2', '1']]
-    assert board.check_column(check_four_consecutive,board) == None
+    assert board.check_column(check_four_consecutive) == None
 
 def test_diagonal_win():
     board = Board()
@@ -135,7 +135,7 @@ def test_diagonal_win():
         ['?', '?', '?', '?', '?', '1', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '1', '2', '2', '2']]
-    assert board.check_diagonals(check_four_consecutive,board) == [["1"]]
+    assert board.check_diagonals(check_four_consecutive) == [["1"]]
 
 def test_diagonal_win_other_loop():
     board = Board()
@@ -146,7 +146,7 @@ def test_diagonal_win_other_loop():
         ['1', '?', '2', '1', '?', '?', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '?', '2', '2', '2']]
-    assert board.check_diagonals(check_four_consecutive,board) == [["1"]]
+    assert board.check_diagonals(check_four_consecutive) == [["1"]]
 
 def test_other_diagonal_win():
     board = Board()
@@ -157,7 +157,7 @@ def test_other_diagonal_win():
         ['2', '?', '?', '?', '?', '?', '1'],
         ['1', '2', '1', '?', '?', '?', '?'],
         ['2', '2', '2', '1', '?', '?', '?']]
-    assert board.check_diagonals(check_four_consecutive,board) == [["1"]]
+    assert board.check_diagonals(check_four_consecutive) == [["1"]]
 
 def test_other_diagonal_win_other_loop():
     board = Board()
@@ -168,7 +168,7 @@ def test_other_diagonal_win_other_loop():
         ['2', '1', '?', '?', '?', '?', '?'],
         ['1', '2', '1', '?', '?', '?', '?'],
         ['2', '2', '2', '1', '?', '?', '?']]
-    assert board.check_diagonals(check_four_consecutive,board) == [["1"]]
+    assert board.check_diagonals(check_four_consecutive) == [["1"]]
 
 def test_diagonal_not_win():
     board = Board()
@@ -179,10 +179,12 @@ def test_diagonal_not_win():
         ['?', '?', '?', '?', '?', '1', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '1', '2', '2', '2']]
-    assert board.check_diagonals(check_four_consecutive,board) == None
-
-def test_provide_winner():
+    assert board.check_diagonals(check_four_consecutive) == None
+def test_provide_winner_diagonal():
     board = Board()
+    board.last_placed_row = 3
+    board.last_placed_column = 5
+    board.last_placed_player = "1"
     board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
@@ -190,10 +192,54 @@ def test_provide_winner():
         ['?', '?', '?', '?', '?', '1', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '1', '2', '2', '2']]
-    assert board.provide_winner(board) == [["1"]]
+    assert board.provide_winner() == [["1"]]
+def test_provide_winner_o_diagonal():
+    board = Board()
+    board.last_placed_row = 4
+    board.last_placed_column = 2
+    board.last_placed_player = "1"
+    board.board = [
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['1', '?', '?', '?', '?', '?', '?'],
+        ['?', '1', '?', '?', '?', '?', '2'],
+        ['?', '?', '1', '?', '?', '2', '1'],
+        ['?', '?', '?', '1', '2', '2', '2']]
+    assert board.provide_winner() == [["1"]]
+
+def test_provide_winner_column():
+    board = Board()
+    board.last_placed_row = 2
+    board.last_placed_column = 5
+    board.last_placed_player = "1"
+    board.board = [
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '1', '?'],
+        ['?', '?', '?', '?', '?', '1', '2'],
+        ['?', '?', '?', '?', '?', '1', '1'],
+        ['?', '?', '?', '?', '2', '1', '2']]
+    assert board.provide_winner() == [["1"]]
+
+def test_provide_winner_row():
+    board = Board()
+    board.last_placed_row = 5
+    board.last_placed_column = 2
+    board.last_placed_player = "1"
+    board.board = [
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '?'],
+        ['?', '?', '?', '?', '?', '?', '2'],
+        ['?', '?', '?', '?', '?', '2', '1'],
+        ['1', '1', '1', '1', '2', '2', '2']]
+    assert board.provide_winner() == [["1"]]
 
 def test_provide_winner_tie():
     board = Board()
+    board.last_placed_row = 0
+    board.last_placed_column = 6
+    board.last_placed_player = "1"
     board.board = [
         ['1', '2', '1', '2', '1', '2', '1'],
         ['1', '2', '1', '1', '1', '2', '1'],
@@ -201,10 +247,13 @@ def test_provide_winner_tie():
         ['1', '2', '1', '1', '1', '2', '1'],
         ['2', '1', '2', '2', '2', '1', '2'],
         ['2', '1', '2', '1', '2', '1', '2']]
-    assert board.provide_winner(board) == None
+    assert board.provide_winner() == [["0"]]
 
 def test_provide_winner_no_winner():
     board = Board()
+    board.last_placed_row = 5
+    board.last_placed_column = 3
+    board.last_placed_player = "1"
     board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
@@ -212,4 +261,4 @@ def test_provide_winner_no_winner():
         ['?', '?', '?', '?', '?', '1', '2'],
         ['?', '?', '?', '?', '1', '2', '1'],
         ['?', '?', '?', '1', '2', '2', '2']]
-    assert board.provide_winner(board) == None
+    assert board.provide_winner() == [None]

@@ -6,6 +6,9 @@ from board import Board, check_four_consecutive, check_potential_win, check_pote
 def test_minmax_winning_board_scoring():
     new_game = Game()
     new_game.current_color = "1"
+    new_game.board.last_placed_column =3
+    new_game.board.last_placed_row = 2
+    new_game.board.last_placed_player = "1"
     new_game.board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
@@ -18,6 +21,9 @@ def test_minmax_winning_board_scoring():
 def test_minmax_losing_board_scoring():
     new_game = Game()
     new_game.current_color = "1"
+    new_game.board.last_placed_column = 4
+    new_game.board.last_placed_row = 2
+    new_game.board.last_placed_player = "2"
     new_game.board.board = [
         ['?', '?', '?', '?', '?', '?', '?'],
         ['?', '?', '?', '?', '?', '?', '?'],
@@ -30,6 +36,9 @@ def test_minmax_losing_board_scoring():
 def test_minmax_tied_board_scoring():
     new_game = Game()
     new_game.current_color = "1"
+    new_game.board.last_placed_column = 6
+    new_game.board.last_placed_row = 0
+    new_game.board.last_placed_player = "1"
     new_game.board.board = [
         ['1', '2', '1', '2', '1', '2', '1'],
         ['1', '2', '1', '1', '1', '2', '1'],
@@ -42,6 +51,9 @@ def test_minmax_tied_board_scoring():
 def test_minmax_maximizer_win():
     new_game = Game()
     new_game.current_color = "1"
+    new_game.board.last_placed_column = 5
+    new_game.board.last_placed_row = 0
+    new_game.board.last_placed_player = "2"
     new_game.board.board = [
         ['1', '1', '1', '2', '2', '2', '?'],
         ['2', '2', '2', '1', '1', '1', '?'],
@@ -55,6 +67,9 @@ def test_minmax_maximizer_win():
 def test_minmax_maximizer_lose():
     new_game = Game()
     new_game.current_color = "1"
+    new_game.board.last_placed_column = 6
+    new_game.board.last_placed_row = 2
+    new_game.board.last_placed_player = "1"
     new_game.board.board = [
         ['1', '1', '1', '2', '?', '2', '?'],
         ['2', '2', '2', '1', '?', '1', '?'],
@@ -68,6 +83,9 @@ def test_minmax_maximizer_lose():
     
 def test_minmax_maximizer_tie():
     new_game = Game()
+    new_game.board.last_placed_column = 4
+    new_game.board.last_placed_row = 0
+    new_game.board.last_placed_player = "2"
     new_game.current_color = "1"
     new_game.board.board = [
         ['1', '2', '1', '2', '1', '2', '?'],
@@ -80,6 +98,9 @@ def test_minmax_maximizer_tie():
 
 def test_minmax_just_returning_first_column_checked():
     new_game = Game()
+    new_game.board.last_placed_column = 3
+    new_game.board.last_placed_row = 0
+    new_game.board.last_placed_player = "2"
     new_game.current_color = "1"
     new_game.board.board = [
         ['?', '?', '1', '2', '1', '2', '1'],
@@ -93,6 +114,9 @@ def test_minmax_just_returning_first_column_checked():
 
 def test_minmax_just_returning_last_column_checked():
     new_game = Game()
+    new_game.board.last_placed_column = 3
+    new_game.board.last_placed_row = 0
+    new_game.board.last_placed_player = "2"
     new_game.current_color = "1"
     new_game.board.board = [
         ['?', '?', '1', '2', '1', '2', '?'],
@@ -107,6 +131,9 @@ def test_minmax_just_returning_last_column_checked():
 
 def test_minmax_diminishing_future_returns():
     new_game = Game()
+    new_game.board.last_placed_column = 2
+    new_game.board.last_placed_row = 1
+    new_game.board.last_placed_player = "1"
     new_game.current_color = "2"
     new_game.set_heuristic_score = check_potential_win
     new_game.board.board = [

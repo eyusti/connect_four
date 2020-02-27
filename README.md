@@ -19,9 +19,9 @@ This heuristic always beats RNG as player one at a depth of 1 and beats the Mont
 ### Monte Carlo Game Tree Search(MCTS)
 The second AI I built uses purely a Monte Carlo Tree search to find the best next move. I used this [tutorial](https://int8.io/monte-carlo-tree-search-beginners-guide/) and highly recommend it. There were a few things that were non-obvious to me around how to apply this tutorial specifically around Connect Four:
 
-1. Don't score losses as negative. My mind defaulted to this scoring system since I build this directly after minmax which scores wins as 1, ties as 0 and losses as -1. Since UCB averages scores, negatives end up appearing less bad. I currently score wins as 1, ties as .1 and losses as 0.
+1. I've seen some conflicting information about what constant to use in UCB with the general advice being to use whatever works for the problem you are working on. I've found the sqrt(2) worked well for Connect Four but since it is a constant chosen to fit the problem at hand, I think others will work as well.
 
-2. I've seen some conflicting information about what constant to use in UCB with the general advice being to use whatever works for the problem you are working on. I've found the sqrt(2) worked well for Connect Four but since it is a constant chosen to fit the problem at hand, I think others will work as well.
+2. You have to consider the UCB relative to the player that took a turn that round when applying MCTS to a competative game. There are a lot of tutorials that discuss MCTS in the abstract and don't touch on this piece as a critical part of implementation.
 
-3. You have to consider the UCB relative to the player that took a turn that round when applying MCTS to a competative game. There are a lot of tutorials that discuss MCTS in the abstract and don't touch on this piece as a critical part of implementation.
+3. After writing the core pieces of MCTS, the majority of time to improve outcomes produced is spent optimizing code to allow for more rollouts. For instance using pypy or decrementing rollouts as the movespace decreases.
 

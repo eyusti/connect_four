@@ -4,15 +4,21 @@ from pprint import pprint
 class Board:
     def __init__(self):
         self.board = [["?" for column in range(7)]for row in range(6)]
+        self.last_placed_row = None
+        self.last_placed_column = None
+        self.last_placed_player = None
 
 # Utility
     def print_board(self):
         pprint(self.board)
 
     def place(self, column, player_color):
+        self.last_placed_column = column
+        self.last_placed_player = player_color
         for row in range(5,-1,-1):
             if self.board[row][column] == "?":
                 self.board[row][column] = player_color
+                self.last_placed_row = row
                 return
 
     def get_all_moves(self, player_color):
@@ -24,35 +30,32 @@ class Board:
                 all_moves.append((new_board,column))
         return all_moves
 
-# Board Checkers
     def board_is_full(self):
-        for row in range(6):
-            for column in range(7):
-                #print(self.board[row][column])
-                if self.board[row][column] == "?":
-                    return False
+        for column in range(7):
+            if self.board[0][column] == "?":
+                return False
         return True
     
     def does_column_have_space(self, column):
         return self.board[0][column] == "?"
 
-# Win Checkers
-    def check_row(self,function,board):
+# Heuristic Checkers
+    def check_row(self,function):
         list_symb_winner_list = []
         for row in range(6):
-            symb_winner_list = function(board.board[row])
+            symb_winner_list = function(self.board[row])
             if symb_winner_list:
                 list_symb_winner_list.append(symb_winner_list)
         if list_symb_winner_list:
             return list_symb_winner_list
         return None       
 
-    def check_column(self, function, board):
+    def check_column(self, function):
         list_symb_winner_list = []
         for column in range(7):
             column_list = []
             for row in range(6):
-                column_list.append(board.board[row][column])
+                column_list.append(self.board[row][column])
             symb_winner_list = function(column_list)
             if symb_winner_list:
                 list_symb_winner_list.append(symb_winner_list)
@@ -60,7 +63,7 @@ class Board:
             return list_symb_winner_list
         return None
 
-    def check_diagonals(self, function, board):
+    def check_diagonals(self, function):
         diagonal_list = []
         c_index = 0
         r_index = 0
@@ -70,7 +73,7 @@ class Board:
         #test_other_diagonal_win
         while routine_index < 4:
             while c_index < 7 and r_index < 6:
-                diagonal_list.append(board.board[r_index][c_index])
+                diagonal_list.append(self.board[r_index][c_index])
                 c_index += 1
                 r_index += 1
             symb_winner_list = function(diagonal_list)
@@ -88,7 +91,7 @@ class Board:
         #test_other_diagonal_win_other_loop
         while routine_index < 3:
             while c_index < 7 and r_index < 6:
-                diagonal_list.append(board.board[r_index][c_index])
+                diagonal_list.append(self.board[r_index][c_index])
                 c_index += 1
                 r_index += 1
             symb_winner_list = function(diagonal_list)
@@ -106,7 +109,7 @@ class Board:
         #test_diagonal_win_other_loop
         while routine_index > 2:
             while c_index >= 0 and r_index < 6:
-                diagonal_list.append(board.board[r_index][c_index])
+                diagonal_list.append(self.board[r_index][c_index])
                 c_index -= 1
                 r_index += 1
             symb_winner_list = function(diagonal_list)
@@ -124,7 +127,7 @@ class Board:
         #test_diagonal_win
         while routine_index < 3:
             while c_index > 0 and r_index < 6:
-                diagonal_list.append(board.board[r_index][c_index])
+                diagonal_list.append(self.board[r_index][c_index])
                 c_index -= 1
                 r_index += 1
             symb_winner_list = function(diagonal_list)
@@ -140,9 +143,47 @@ class Board:
             
         return None
     
-    def provide_winner(self,board):
-        symb_winner = self.check_row(check_four_consecutive,board) or self.check_column(check_four_consecutive,board) or self.check_diagonals(check_four_consecutive,board)
-        return symb_winner
+    def provide_winner(self):
+        if self.last_placed_player == None:
+            return [None]
+
+        symb_winner_tie = None
+        symb_winner_column = None
+        symb_winner_diagonal_1 = None
+        symb_winner_diagonal_2 = None
+
+        #check tie
+        if self.board_is_full():
+            symb_winner_tie = ["0"]
+        #check row
+        symb_winner_row = check_four_consecutive(self.board[self.last_placed_row])
+        #check column
+        if self.last_placed_row <= 2:
+            if self.board[self.last_placed_row][self.last_placed_column] == self.last_placed_player and self.board[self.last_placed_row + 1][self.last_placed_column] == self.last_placed_player and self.board[self.last_placed_row+2][self.last_placed_column] == self.last_placed_player and self.board[self.last_placed_row+3][self.last_placed_column] == self.last_placed_player:
+                symb_winner_column = [self.last_placed_player]
+        #check diagonal
+        diagonal_1 = []
+
+        for index in range(-3,3):
+            row = self.last_placed_row + index
+            column = self.last_placed_column + index
+            if row >= 0 and row<=5 and column>=0 and column<=6:
+                diagonal_1.append(self.board[row][column])
+
+        symb_winner_diagonal_1 = check_four_consecutive(diagonal_1)
+
+        diagonal_2 = []
+        for index in range(-3,3):
+            row = self.last_placed_row + index
+            column = self.last_placed_column + (index * -1)
+            if row >= 0 and row<=5 and column>=0 and column<=6:
+                diagonal_2.append(self.board[row][column])
+        
+        symb_winner_diagonal_2 = check_four_consecutive(diagonal_2)
+
+        symb_winner = symb_winner_tie or symb_winner_row or symb_winner_column or symb_winner_diagonal_1 or symb_winner_diagonal_2
+        
+        return [symb_winner]
 
 def check_four_consecutive(any_list):
     visited_list = []

@@ -16,10 +16,15 @@ def monte_carlo_tree_search(current_board, current_player):
         backpropogate_scores(node_to_expand, winner)
         num_rollouts -= 1
     
+    #this is for testing
+    """
     for child in root.children:
         print(child.score/child.times_visited, child.times_visited, child.score)
+    
     print("--")
     print(best_move(root))
+    """
+    #end for testing
 
     return best_move(root)
 
@@ -63,7 +68,7 @@ class Node:
     def get_children_nodes(self):
         self.children = []
 
-        if self.board.provide_winner(self.board):
+        if self.board.provide_winner() != [None]:
             return
 
         next_player = switch_turns(self.person_who_just_played)
@@ -128,21 +133,17 @@ def switch_turns(current_player):
 
 def rollout_policy(node):
     playout_board = node.board
-    winner = playout_board.provide_winner(playout_board)
-    if playout_board.board_is_full():
-        winner = [["0"]]
+    winner = playout_board.provide_winner()
 
     person_who_just_played = node.person_who_just_played
-    while not winner:
+    while winner == [None]:
         person_who_just_played = switch_turns(person_who_just_played)
         while True:
             column = get_random_column()
             if playout_board.does_column_have_space(column):
                 break
         playout_board.place(column, person_who_just_played)
-        winner = playout_board.provide_winner(node.board)
-        if playout_board.board_is_full():
-            winner = [["0"]]
+        winner = playout_board.provide_winner()
 
     return winner
 

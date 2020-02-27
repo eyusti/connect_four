@@ -129,16 +129,16 @@ class Game:
                 self.board.place(column, self.current_color)
                 self.board.print_board()
 
-            winner = self.board.provide_winner(self.board)
+            winner = self.board.provide_winner()
 
-            if winner:
-                print("The game has been won by: Player " + winner[0][0])
-                return winner[0][0]
-            
-            if self.board.board_is_full():
+            if winner == [["0"]]:
                 #print("The game is a tie")
                 return "tie"
 
+            if winner != [None]:
+                print("The game has been won by: Player " + winner[0][0])
+                return winner[0][0]
+            
             self.switch_current_player()
             
 # AI Solutions
@@ -147,13 +147,13 @@ class Game:
         return column
 
     def min_max(self, board, player, depth, alpha, beta):
-        winner = board.provide_winner(board)
+        winner = board.provide_winner()
         if winner == [[self.current_color]]:
             return self.max, None
-        if winner:
-            return self.min, None
-        if not winner and board.board_is_full():
+        if winner == [["0"]]:
             return 0, None
+        if winner != [None]:
+            return self.min, None   
         if depth == 0:
             return self.heuristic_score(board) , None
             
@@ -197,9 +197,9 @@ class Game:
     def heuristic_score(self,board):
         count_1 = 0
         count_2 = 0
-        temp_row = board.check_row(self.set_heuristic_score,board)
-        temp_column = board.check_column(self.set_heuristic_score,board)
-        temp_diagonal = board.check_diagonals(self.set_heuristic_score,board)
+        temp_row = board.check_row(self.set_heuristic_score)
+        temp_column = board.check_column(self.set_heuristic_score)
+        temp_diagonal = board.check_diagonals(self.set_heuristic_score)
 
         if temp_row:
             for i in range(len(temp_row)):
