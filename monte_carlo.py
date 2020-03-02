@@ -6,14 +6,14 @@ from time import sleep
 
 def monte_carlo_tree_search(current_board, current_player):
     #need to replace this with a better metric for resources left
-    num_rollouts = 10000
+    num_rollouts = 100000
     root = Node(None, board = current_board, person_who_just_played= switch_turns(current_player))
     root.get_children_nodes()
 
     while num_rollouts > 0 :
         node_to_expand = traverse(root)
         winner = rollout(node_to_expand, current_player)
-        backpropogate_scores(node_to_expand, winner)
+        backpropagate_scores(node_to_expand, winner)
         num_rollouts -= 1
     
     #this is for testing
@@ -43,13 +43,13 @@ def rollout(node, current_player):
 
     return winner[0][0]
 
-def backpropogate_scores(node, winner):
+def backpropagate_scores(node, winner):
     if is_root(node):
         node.times_visited += 1
         return
     
     update_stats(node,winner)
-    backpropogate_scores(node.parent_node,winner)
+    backpropagate_scores(node.parent_node,winner)
 
 ### Helper Methods ###
 class Node:
@@ -91,7 +91,7 @@ def best_move(root):
 
 # Traverse Helpers
 def ucb_scoring(node):
-    score = (node.score/node.times_visited) + sqrt(2) * sqrt(log(node.parent_node.times_visited)/node.times_visited)
+    score = (node.score/node.times_visited) + 2 * sqrt(log(node.parent_node.times_visited)/node.times_visited)
     return score
 
 def best_ucb(node):
@@ -151,7 +151,7 @@ def get_random_column():
     column = randint(0,6)
     return column
 
-# Backpropogate Helpers
+# Backpropagate Helpers
 
 def is_root(node):
     return node.parent_node == None
@@ -160,7 +160,10 @@ def update_stats(node,winner):
     if node.person_who_just_played == winner:
         node.score += 1
 
-    if winner == "0":
-        node.score += 0.1
+    elif winner == "0":
+        node.score += 0
+
+    else:
+        node.score += -1
 
     node.times_visited += 1
