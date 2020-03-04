@@ -8,9 +8,9 @@ class Game:
     def __init__(self):
         #Player can be string of name of AI
         self.player1 = None
-        self.p1_color = "\u001b[36m1\u001b[0m"
+        self.p1_color = "1"
         self.player2 = None
-        self.p2_color = "\u001b[35m2\u001b[0m"
+        self.p2_color = "2"
         self.current_turn = 1
         self.current_color = None
         self.board = Board()
@@ -57,7 +57,8 @@ class Game:
             self.current_color = self.p1_color
             return
 
-    def play_game(self):        
+    def play_game(self):
+        print("\n" * 10,end="")       
         while not self.board.board_is_full():
             current_AI = None
 
@@ -132,11 +133,13 @@ class Game:
             winner = self.board.provide_winner()
 
             if winner == [["0"]]:
-                #print("The game is a tie")
+                print("The game is a tie")
+                print("\n")
                 return "tie"
 
             if winner != [None]:
                 print("The game has been won by: Player " + winner[0][0])
+                print("\n")
                 return winner[0][0]
             
             self.switch_current_player()

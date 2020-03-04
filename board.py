@@ -10,11 +10,17 @@ class Board:
 
 # Utility
     def print_board(self):
+        print("\u001b[10F",end="")
         for row in range(6):
             for column in range(7):
-                print(self.board[row][column]," ",end="")
+                if self.board[row][column] == "1":
+                    print("\u001b[36m1\u001b[0m"," ",end="")
+                elif self.board[row][column] == "2":
+                    print("\u001b[35m2\u001b[0m"," ",end="")
+                else:
+                    print("?"," ",end="")
             print("")
-        print("\n")
+        print("")
 
     def place(self, column, player_color):
         self.last_placed_column = column

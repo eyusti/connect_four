@@ -3,12 +3,13 @@ from tabulate import tabulate
 import multiprocessing
 
 def play_games(player_1, player_2):
-    games_to_play_counter = 1
+    games_to_play_counter = 10
     games_to_play = games_to_play_counter
     all_games = []
 
     while games_to_play_counter > 0:
-        print(str(games_to_play_counter), " games remaining")
+        #print(str(games_to_play_counter), " game(s) remaining")
+        #print("\n")
         new_game = connect_four.Game()
         new_game.player1 = player_1
         new_game.player2 = player_2
@@ -16,9 +17,9 @@ def play_games(player_1, player_2):
         all_games.append(winner)
         games_to_play_counter -= 1
 
-    wins_player_1 = all_games.count("\u001b[36m1\u001b[0m")
+    wins_player_1 = all_games.count("1")
     percent_wins_player_1 = wins_player_1 / games_to_play
-    wins_player_2 = all_games.count("\u001b[35m2\u001b[0m")
+    wins_player_2 = all_games.count("2")
     percent_wins_player_2 = wins_player_2 / games_to_play
     ties = all_games.count("tie")
     percent_ties = ties / games_to_play
