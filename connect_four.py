@@ -8,9 +8,9 @@ class Game:
     def __init__(self):
         #Player can be string of name of AI
         self.player1 = None
-        self.p1_color = "1"
+        self.p1_color = "\u001b[36m1\u001b[0m"
         self.player2 = None
-        self.p2_color = "2"
+        self.p2_color = "\u001b[35m2\u001b[0m"
         self.current_turn = 1
         self.current_color = None
         self.board = Board()

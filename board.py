@@ -10,7 +10,11 @@ class Board:
 
 # Utility
     def print_board(self):
-        pprint(self.board)
+        for row in range(6):
+            for column in range(7):
+                print(self.board[row][column]," ",end="")
+            print("")
+        print("\n")
 
     def place(self, column, player_color):
         self.last_placed_column = column

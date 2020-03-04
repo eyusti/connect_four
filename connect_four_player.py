@@ -16,9 +16,9 @@ def play_games(player_1, player_2):
         all_games.append(winner)
         games_to_play_counter -= 1
 
-    wins_player_1 = all_games.count("1")
+    wins_player_1 = all_games.count("\u001b[36m1\u001b[0m")
     percent_wins_player_1 = wins_player_1 / games_to_play
-    wins_player_2 = all_games.count("2")
+    wins_player_2 = all_games.count("\u001b[35m2\u001b[0m")
     percent_wins_player_2 = wins_player_2 / games_to_play
     ties = all_games.count("tie")
     percent_ties = ties / games_to_play

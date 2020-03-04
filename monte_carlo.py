@@ -6,7 +6,7 @@ from time import sleep
 
 def monte_carlo_tree_search(current_board, current_player):
     #need to replace this with a better metric for resources left
-    num_rollouts = 100000
+    num_rollouts = 100
     root = Node(None, board = current_board, person_who_just_played= switch_turns(current_player))
     root.get_children_nodes()
 
@@ -15,16 +15,6 @@ def monte_carlo_tree_search(current_board, current_player):
         winner = rollout(node_to_expand, current_player)
         backpropagate_scores(node_to_expand, winner)
         num_rollouts -= 1
-    
-    #this is for testing
-    """
-    for child in root.children:
-        print(child.score/child.times_visited, child.times_visited, child.score)
-    
-    print("--")
-    print(best_move(root))
-    """
-    #end for testing
 
     return best_move(root)
 
